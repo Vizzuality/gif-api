@@ -1,0 +1,23 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  username:  <%= ENV.fetch('GCPM_DATABASE_USER') { 'postgres' } %>
+  password: <%= ENV.fetch('GCPM_DATABASE_PASSWORD') { 'postgres' } %>
+  host: <%= ENV.fetch('GCPM_DATABASE_HOST') { 'localhost' } %>
+  pool: 5
+
+development:
+  <<: *default
+  database: gif_development
+
+test: &test
+  <<: *default
+  database: gif_test
+
+staging:
+  <<: *default
+  url: <%= ENV['GIF_STAGING_DATABASE_URL'] %>
+
+production:
+  <<: *default
+  database: <%= ENV['GIF_DATABASE_URL'] %>
