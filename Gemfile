@@ -28,7 +28,6 @@ gem 'dotenv-rails', '2.0.1'
 
 group :development, :test do
   gem 'byebug', platform: :mri
-  gem 'web-console', '>= 3.3.0'
 end
 
 group :development do
@@ -38,6 +37,7 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'better_errors', '2.1.1'
   gem 'binding_of_caller', '0.7.2'
+  gem 'web-console', '>= 3.3.0'
   gem 'annotate', '2.7.1'
 end
 
