@@ -10,27 +10,96 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170316155841) do
+ActiveRecord::Schema.define(version: 20170316193559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "co_benefits_of_interventions", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "co_benefits_of_interventions_projects", id: false, force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "co_benefits_of_intervention_id"
+    t.index ["project_id", "co_benefits_of_intervention_id"], name: "cbfp", unique: true, using: :btree
+  end
+
+  create_table "hazard_types", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "hazard_types_projects", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "hazard_type_id"
+    t.index ["hazard_type_id"], name: "index_hazard_types_projects_on_hazard_type_id", using: :btree
+    t.index ["project_id"], name: "index_hazard_types_projects_on_project_id", using: :btree
+  end
+
+  create_table "nature_based_solutions", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "nature_based_solutions_projects", id: false, force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "nature_based_solution_id"
+    t.index ["project_id", "nature_based_solution_id"], name: "nbsp", unique: true, using: :btree
+  end
+
+  create_table "organizations", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "organizations_projects", force: :cascade do |t|
+    t.integer  "organization_id"
+    t.integer  "project_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["organization_id"], name: "index_organizations_projects_on_organization_id", using: :btree
+    t.index ["project_id"], name: "index_organizations_projects_on_project_id", using: :btree
+  end
+
+  create_table "primary_benefits_of_interventions", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "primary_benefits_of_interventions_projects", id: false, force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "primary_benefits_of_intervention_id"
+    t.index ["project_id", "primary_benefits_of_intervention_id"], name: "pbfp", unique: true, using: :btree
+  end
+
   create_table "projects", force: :cascade do |t|
     t.integer  "project_uid"
+    t.integer  "status"
     t.text     "name"
+    t.string   "scale"
     t.float    "estimated_cost"
     t.float    "estimated_monetary_benefits"
     t.string   "original_currency"
-    t.float    "primary_benefits_of_intervention"
-    t.float    "cobenefits_of_intervention"
     t.text     "summary"
     t.integer  "start_year"
     t.integer  "completion_year"
     t.string   "implementation_status"
+    t.string   "intervention_type"
     t.text     "learn_more"
     t.text     "references"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
+  add_foreign_key "hazard_types_projects", "hazard_types"
+  add_foreign_key "hazard_types_projects", "projects"
+  add_foreign_key "organizations_projects", "organizations"
+  add_foreign_key "organizations_projects", "projects"
 end

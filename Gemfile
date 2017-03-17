@@ -28,6 +28,7 @@ gem 'dotenv-rails', '2.0.1'
 
 group :development, :test do
   gem 'byebug', platform: :mri
+  gem 'factory_girl_rails', '4.8.0'
 end
 
 group :development do
@@ -42,7 +43,7 @@ group :development do
 end
 
 group :test do
-  gem 'factory_girl_rails', '4.8.0'
+  gem 'faker'
   gem 'rspec-rails', '3.5.0'
   gem 'database_cleaner', '1.5.3'
 end
