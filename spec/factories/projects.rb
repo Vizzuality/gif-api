@@ -34,8 +34,8 @@ FactoryGirl.define do
     estimated_monetary_benefits { Faker::Number.decimal(3, 2) }
     original_currency "USD"
     summary { Faker::ChuckNorris.fact }
-    start_year { Faker::ChuckNorris.fact }
-    completion_year { Faker::ChuckNorris.fact }
+    start_year 2000
+    completion_year 2018
     implementation_status "Completed"
     learn_more { Faker::StarWars.quote }
     references { Faker::TwinPeaks.quote }

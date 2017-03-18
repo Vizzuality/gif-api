@@ -58,4 +58,10 @@ RSpec.describe Project, type: :model do
       expect(project).to be_valid
     end
   end
+  context "scopes" do
+    before :each do
+
+    end
+
+  end
 end
