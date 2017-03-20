@@ -6,7 +6,7 @@ module Api::V1
     end
     private
       def filter_params
-        params.permit()
+        params.permit(:order, :direction)
       end
   end
 end
