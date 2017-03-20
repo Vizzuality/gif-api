@@ -12,7 +12,7 @@
 #  iso        :string
 #  level      :integer
 #  region     :string
-#  centroid   :json
+#  centroid   :text
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
