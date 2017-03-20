@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170316193559) do
+ActiveRecord::Schema.define(version: 20170320162004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,28 @@ ActiveRecord::Schema.define(version: 20170316193559) do
     t.integer "hazard_type_id"
     t.index ["hazard_type_id"], name: "index_hazard_types_projects_on_hazard_type_id", using: :btree
     t.index ["project_id"], name: "index_hazard_types_projects_on_project_id", using: :btree
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.string   "adm0_code"
+    t.string   "adm0_name"
+    t.string   "adm1_code"
+    t.string   "adm1_name"
+    t.string   "adm2_code"
+    t.string   "adm2_name"
+    t.string   "iso"
+    t.integer  "level"
+    t.string   "region"
+    t.text     "centroid"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "locations_projects", force: :cascade do |t|
+    t.integer "location_id"
+    t.integer "project_id"
+    t.index ["location_id"], name: "index_locations_projects_on_location_id", using: :btree
+    t.index ["project_id"], name: "index_locations_projects_on_project_id", using: :btree
   end
 
   create_table "nature_based_solutions", force: :cascade do |t|
@@ -100,6 +122,8 @@ ActiveRecord::Schema.define(version: 20170316193559) do
 
   add_foreign_key "hazard_types_projects", "hazard_types"
   add_foreign_key "hazard_types_projects", "projects"
+  add_foreign_key "locations_projects", "locations"
+  add_foreign_key "locations_projects", "projects"
   add_foreign_key "organizations_projects", "organizations"
   add_foreign_key "organizations_projects", "projects"
 end

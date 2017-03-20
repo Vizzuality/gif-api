@@ -27,16 +27,16 @@ FactoryGirl.define do
       n
     end
     name { Faker::Hacker.say_something_smart }
-    estimated_cost { Faker::Number.decimal(3, 2) }
+    estimated_cost 3000
     status 1
-    scale "National"
-    intervention_type "Green"
+    scale "national"
+    intervention_type "green"
     estimated_monetary_benefits { Faker::Number.decimal(3, 2) }
     original_currency "USD"
     summary { Faker::ChuckNorris.fact }
     start_year 2000
     completion_year 2018
-    implementation_status "Completed"
+    implementation_status "completed"
     learn_more { Faker::StarWars.quote }
     references { Faker::TwinPeaks.quote }
   end

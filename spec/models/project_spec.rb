@@ -52,6 +52,21 @@ RSpec.describe Project, type: :model do
       project.valid?
       expect {project.save!}.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Scale is not included in the list")
     end
+    it "Should have a valid start_year" do
+      project = build(:project, start_year: "one thousand")
+      project.valid?
+      expect {project.save!}.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Start year is not a number")
+    end
+    it "Should have a valid completion_year" do
+      project = build(:project, completion_year: "one thousand", start_year: nil)
+      project.valid?
+      expect {project.save!}.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Completion year is not a number")
+    end
+    it "Should have a completion year after start year" do
+      project = build(:project, completion_year: 1990, start_year: 2025)
+      project.valid?
+      expect {project.save!}.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Completion year can't be previous to Start year")
+    end
     it "should be valid" do
       project = build(:project)
       project.valid?
@@ -60,8 +75,79 @@ RSpec.describe Project, type: :model do
   end
   context "scopes" do
     before :each do
-
+      @project = create(:project, name: 'aaaaa test project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'pipeline', intervention_type: 'grey', status: 'published')
+      @cbf = create(:co_benefits_of_intervention)
+      @pbf = create(:primary_benefits_of_intervention)
+      @nbs = create(:nature_based_solution)
+      @ht = create(:hazard_type)
+      @organization = create(:organization, name: 'aaa')
+      @not_found_organization = create(:organization, name: 'zzz')
+      @location = create(:location, adm0_code: 'SPA')
+      @project.co_benefits_of_interventions << @cbf
+      @project.primary_benefits_of_interventions << @pbf
+      @project.nature_based_solutions << @nbs
+      @project.hazard_types << @ht
+      @project.organizations << @organization
+      @project.locations << @location
+      @not_found_project = create(:project, status: 'published', name: 'zzzzz test project')
+      @not_found_project.organizations << @not_found_organization
     end
-
+    it "can be searchable by name" do
+      projects = Project.fetch_all(name:[@project.name])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by scales" do
+      projects = Project.fetch_all(scales:[@project.scale])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by organizations" do
+      projects = Project.fetch_all(organizations: [@organization.id])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by countries" do
+      projects = Project.fetch_all(countries: [@location.adm0_code])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by regions" do
+      projects = Project.fetch_all(regions: [@location.region])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by by_hazard_types" do
+      projects = Project.fetch_all(hazard_types: [@ht.id])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by intervention_types" do
+      projects = Project.fetch_all(intervention_types: [@project.intervention_type])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by nature based solutions" do
+      projects = Project.fetch_all(nature_based_solutions: [@nbs.id])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable between costs" do
+      projects = Project.fetch_all(from_cost: 900, to_cost: 1200)
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be ordered by name" do
+      projects = Project.fetch_all(order: 'name', direction: 'asc')
+      expect(projects.first).to eq(@project)
+    end
+    it "can be ordered by organizations name" do
+      projects = Project.fetch_all(order: 'organization', direction: 'asc')
+      expect(projects.first).to eq(@project)
+    end
+    it "can be ordered by countru" do
+      projects = Project.fetch_all(order: 'country', direction: 'asc')
+      expect(projects.first).to eq(@project)
+    end
   end
 end
