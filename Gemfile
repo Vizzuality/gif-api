@@ -25,6 +25,7 @@ gem 'carrierwave', '0.10.0'
 gem 'mini_magick', '4.3.6'
 gem 'awesome_print', '1.6.1'
 gem 'dotenv-rails', '2.0.1'
+gem 'rack-cors', require: 'rack/cors'
 gem 'faker'
 
 group :development, :test do

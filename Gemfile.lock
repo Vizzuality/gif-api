@@ -183,6 +183,7 @@ GEM
       activerecord (>= 3.0)
     puma (3.8.1)
     rack (2.0.1)
+    rack-cors (0.4.1)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.0.2)
@@ -304,6 +305,7 @@ DEPENDENCIES
   mini_magick (= 4.3.6)
   pg (~> 0.18)
   puma (~> 3.0)
+  rack-cors
   rails (~> 5.0.2)
   rspec-rails (= 3.5.0)
   sass-rails (~> 5.0)
