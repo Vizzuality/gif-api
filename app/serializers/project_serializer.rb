@@ -22,5 +22,12 @@
 #
 
 class ProjectSerializer < ActiveModel::Serializer
-  attributes :id
+  cache key: 'project'
+  attributes :id, :name, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :summary, :start_year, :completion_year, :implementation_status, :intervention_type, :learn_more, :references
+  has_many :co_benefits_of_interventions, serializer: CoBenefitsOfInterventionSerializer
+  has_many :primary_benefits_of_interventions, serializer: PrimaryBenefitsOfInterventionSerializer
+  has_many :hazard_types, serializer:  HazardTypeSerializer
+  has_many :locations, serializer: LocationSerializer
+  has_many :nature_based_solutions, serializer: NatureBasedSolutionSerializer
+  has_many :organizations, serializer: OrganizationSerializer
 end

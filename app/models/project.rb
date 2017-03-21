@@ -45,7 +45,7 @@ class Project < ApplicationRecord
   scope :by_scales,                 -> scales                 { where(scale: scales) }
   scope :by_organizations,          -> organizations          { where(organizations: { id: organizations } ) }
   scope :by_hazard_types,           -> hazard_types           { where(hazard_types: { id: hazard_types } ) }
-  scope :by_countries,              -> countries              { where(locations: { adm0_code: countries } ) }
+  scope :by_countries,              -> countries              { where(locations: { iso: countries } ) }
   scope :by_regions,                 -> regions               { where(locations: { region: regions } ) }
   scope :by_intervention_types,     -> intervention_types     { where(intervention_type:  intervention_types) }
   scope :by_nature_based_solutions, -> nature_based_solutions { where( nature_based_solutions: { id: nature_based_solutions } ) }

@@ -25,6 +25,7 @@ gem 'carrierwave', '0.10.0'
 gem 'mini_magick', '4.3.6'
 gem 'awesome_print', '1.6.1'
 gem 'dotenv-rails', '2.0.1'
+gem 'faker'
 
 group :development, :test do
   gem 'byebug', platform: :mri
@@ -43,7 +44,6 @@ group :development do
 end
 
 group :test do
-  gem 'faker'
   gem 'rspec-rails', '3.5.0'
   gem 'database_cleaner', '1.5.3'
 end

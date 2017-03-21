@@ -82,7 +82,7 @@ RSpec.describe Project, type: :model do
       @ht = create(:hazard_type)
       @organization = create(:organization, name: 'aaa')
       @not_found_organization = create(:organization, name: 'zzz')
-      @location = create(:location, adm0_code: 'SPA')
+      @location = create(:location, iso: 'SPA')
       @project.co_benefits_of_interventions << @cbf
       @project.primary_benefits_of_interventions << @pbf
       @project.nature_based_solutions << @nbs
@@ -108,7 +108,7 @@ RSpec.describe Project, type: :model do
       expect(projects).not_to include(@not_found_project)
     end
     it "can be searchable by countries" do
-      projects = Project.fetch_all(countries: [@location.adm0_code])
+      projects = Project.fetch_all(countries: [@location.iso])
       expect(projects).to include(@project)
       expect(projects).not_to include(@not_found_project)
     end
