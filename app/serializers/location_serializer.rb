@@ -23,4 +23,7 @@ class LocationSerializer < ActiveModel::Serializer
   def country_iso
     object.iso
   end
+  def centroid
+    JSON.parse object.centroid if object.centroid
+  end
 end
