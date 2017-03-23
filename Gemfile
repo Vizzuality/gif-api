@@ -42,6 +42,14 @@ group :development do
   gem 'binding_of_caller', '0.7.2'
   gem 'web-console', '>= 3.3.0'
   gem 'annotate', '2.7.1'
+
+  # Deploy
+  gem 'capistrano'
+  gem 'capistrano-env-config'
+  gem 'capistrano-rails'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rvm'
+  gem 'capistrano-passenger'
 end
 
 group :test do
