@@ -145,9 +145,13 @@ RSpec.describe Project, type: :model do
       projects = Project.fetch_all(order: 'organization', direction: 'asc')
       expect(projects.first).to eq(@project)
     end
-    it "can be ordered by countru" do
+    it "can be ordered by country" do
       projects = Project.fetch_all(order: 'country', direction: 'asc')
       expect(projects.first).to eq(@project)
+    end
+    it "paginates" do
+      projects = Project.fetch_all(offset: 1, limit: 1)
+      expect(projects.size).to eq(1)
     end
   end
 end

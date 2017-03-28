@@ -64,6 +64,9 @@ class Project < ApplicationRecord
     projects = projects.by_nature_based_solutions(options[:nature_based_solutions])  if options[:nature_based_solutions]
     projects = projects.from_cost(options[:from_cost])                               if options[:from_cost]
     projects = projects.to_cost(options[:to_cost])                                   if options[:to_cost]
+    projects = projects.offset(options[:offset])                                     if options[:offset]
+    projects = projects.limit(options[:limit])                                       if options[:limit]
+    projects = projects.order(self.get_order(options))
     projects = projects.order(self.get_order(options))
     projects.distinct
   end
