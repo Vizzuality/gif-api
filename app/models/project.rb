@@ -67,7 +67,6 @@ class Project < ApplicationRecord
     projects = projects.offset(options[:offset])                                     if options[:offset]
     projects = projects.limit(options[:limit])                                       if options[:limit]
     projects = projects.order(self.get_order(options))
-    projects = projects.order(self.get_order(options))
     projects.distinct
   end
 
