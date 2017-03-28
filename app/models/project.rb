@@ -41,7 +41,7 @@ class Project < ApplicationRecord
   validates :completion_year, numericality: true, allow_nil: true
   validate :years_timeline
   scope :publihsed,                 ->                        { where(status: :published) }
-  scope :by_name,                   -> name                   { where('projects.name = ?', name) }
+  scope :by_name,                   -> name                   { where('projects.name ~ ?', name) }
   scope :by_scales,                 -> scales                 { where(scale: scales) }
   scope :by_organizations,          -> organizations          { where(organizations: { id: organizations } ) }
   scope :by_hazard_types,           -> hazard_types           { where(hazard_types: { id: hazard_types } ) }
