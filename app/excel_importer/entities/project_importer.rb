@@ -55,11 +55,12 @@ class ProjectImporter
     project.summary = data['Summary']
     project.start_year = data['Start Year']
     project.completion_year = data['Completion Year (if applicable)']
-    project.learn_more = data['Implementation Status URL']
+    project.learn_more = data['URL']
     project.references = data['URL (for further information)']
     project.scale = self.validate_in_constants(data['Scale'], Project::SCALES)
     project.intervention_type = self.validate_in_constants(data['Intervention Type'], Project::INTERVENTION_TYPES)
-    #project.implementation_status = self.validate_in_constants(data['Implementation Status'], Project::IMPLEMENTATION_STATUSES)
+    project.implementation_status = self.validate_in_constants(data['Implementation Status'], Project::IMPLEMENTATION_STATUSES)
+
     organizations = self.find_or_create_some_by_name!(data['Organization'], Organization)
     donors = self.find_or_create_some_by_name!(data['Main donor'], Donor)
 
@@ -68,9 +69,18 @@ class ProjectImporter
     nature_based_solutions = self.find_some_by_name(data['Nature-Based Solutions'], NatureBasedSolution)
     hazard_types = self.find_some_by_name(data['Hazard Type'], HazardType)
 
+    locations = self.get_locations(data["Locations"])
+
     if project.valid? && @errors == []
       project.status = 1
       project.save!
+      project.organizations = organizations
+      project.donors = donors
+      project.primary_benefits_of_interventions = primary_benefits_of_interventions
+      project.co_benefits_of_interventions = co_benefits_of_interventions
+      project.nature_based_solutions = nature_based_solutions
+      project.hazard_types = hazard_types
+      project.locations = locations
       return true
     else
       @errors << { project: project.errors.full_messages }
@@ -108,8 +118,36 @@ class ProjectImporter
       ary.each do |name|
         item = model.where(name: name.downcase).first
         if item.present?
+          some << item
+        else
+          j = {}
+          j[model.to_s.underscore.to_sym] = "#{name} is not valid"
+          @errors << j
+        end
       end
       some
+    else
+      nil
+    end
+  end
+
+  def get_locations(candidates)
+    if candidates.present?
+      ary = candidates.to_s.split('|').reject { |i| i.empty? }
+      locations = []
+      ary.each do |code|
+        adm_levels = code.split('.')
+        location = Location.where(adm0_code: adm_levels[0]) if adm_levels[0].present?
+        location = location.where(adm1_code: adm_levels[1]) if adm_levels[1].present?
+        location = location.where(adm2_code: adm_levels[2]) if adm_levels[2].present?
+        location = location.first
+        if location.present?
+          locations << location
+        else
+          @errors << {location: "there is no location with code #{code}"}
+        end
+      end
+      locations
     else
       nil
     end

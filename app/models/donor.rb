@@ -9,6 +9,6 @@
 #
 
 class Donor < ApplicationRecord
-  has_many :donors_projects
-  has_many :projects, through: :donors_projects
+  has_many :donors_projects, dependent: :nullify
+  has_many :projects, through: :donors_projects, dependent: :nullify
 end

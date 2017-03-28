@@ -9,7 +9,7 @@
 #
 
 class Organization < ApplicationRecord
-  has_many :organizations_projects
-  has_many :projects, through: :organizations_projects
+  has_many :organizations_projects, dependent: :nullify
+  has_many :projects, through: :organizations_projects, dependent: :nullify
   validates :name, presence: true, uniqueness: true
 end

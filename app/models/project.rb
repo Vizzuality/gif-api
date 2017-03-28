@@ -27,15 +27,15 @@ class Project < ApplicationRecord
   INTERVENTION_TYPES = %w{hybrid green grey}
   SCALES = %w{local regional national international}
   enum status: [:under_revision, :published, :unpublished]
-  has_many :organizations_projects
-  has_many :organizations, through: :organizations_projects
-  has_many :donors_projects
-  has_many :donors, through: :donors_projects
-  has_and_belongs_to_many :primary_benefits_of_interventions
-  has_and_belongs_to_many :co_benefits_of_interventions
-  has_and_belongs_to_many :nature_based_solutions
-  has_and_belongs_to_many :hazard_types
-  has_and_belongs_to_many :locations
+  has_many :organizations_projects,dependent: :nullify
+  has_many :organizations, through: :organizations_projects,dependent: :nullify
+  has_many :donors_projects,dependent: :nullify
+  has_many :donors, through: :donors_projects,dependent: :nullify
+  has_and_belongs_to_many :primary_benefits_of_interventions,dependent: :nullify
+  has_and_belongs_to_many :co_benefits_of_interventions,dependent: :nullify
+  has_and_belongs_to_many :nature_based_solutions,dependent: :nullify
+  has_and_belongs_to_many :hazard_types,dependent: :nullify
+  has_and_belongs_to_many :locations,dependent: :nullify
   validates :name, presence: true, uniqueness: true
   validates_inclusion_of :implementation_status, in: IMPLEMENTATION_STATUSES, allow_nil: true
   validates_inclusion_of :scale, in: SCALES, allow_nil: true

@@ -9,7 +9,7 @@ class ExcelImporter
 
   attr_reader :errors
 
-  EXCEL_HEADERS = ["PID", "Project Name", "Organization", "Main donor", "Scale", "Locations", "Hazard Type", "Intervention Type", "Nature-Based Solutions", "Estimated Cost (in millions)", "Estimated Monetary Benefits (in millions)", "Benefit details", "Original Currency", "Primary Benefits of Intervention", "Co-Benefits of Intervention", "Summary", "Start Year", "Completion Year (if applicable)", "Implementation Status URL", "URL (for further information)"]
+  EXCEL_HEADERS = ["PID", "Project Name", "Organization", "Main donor", "Scale", "Locations", "Hazard Type", "Intervention Type", "Nature-Based Solutions", "Estimated Cost (in millions)", "Estimated Monetary Benefits (in millions)", "Benefit details", "Original Currency", "Primary Benefits of Intervention", "Co-Benefits of Intervention", "Summary", "Start Year", "Completion Year (if applicable)", "Implementation Status", "URL", "URL (for further information)"]
 
 
   def import!
@@ -43,8 +43,6 @@ class ExcelImporter
         begin
           project_data = DataExtractor.new(row)
           project_data.extract_project
-          project_data.extract_organization if row['Organization'].present?
-          project_data.extract_donor if row['Main donor'].present?
           @errors << project_data.errors.reject(&:blank?) if project_data.errors && !(project_data.errors.reject(&:blank?).blank?)
           Rails.logger.debug 'Project imported'
         rescue => e
