@@ -19,6 +19,7 @@
 #  references                  :text
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
+#  benefit_details             :text
 #
 
 class Project < ApplicationRecord
@@ -28,6 +29,8 @@ class Project < ApplicationRecord
   enum status: [:under_revision, :published, :unpublished]
   has_many :organizations_projects
   has_many :organizations, through: :organizations_projects
+  has_many :donors_projects
+  has_many :donors, through: :donors_projects
   has_and_belongs_to_many :primary_benefits_of_interventions
   has_and_belongs_to_many :co_benefits_of_interventions
   has_and_belongs_to_many :nature_based_solutions
@@ -44,19 +47,21 @@ class Project < ApplicationRecord
   scope :by_name,                   -> name                   { where('projects.name ~ ?', name) }
   scope :by_scales,                 -> scales                 { where(scale: scales) }
   scope :by_organizations,          -> organizations          { where(organizations: { id: organizations } ) }
+  scope :by_donors,                 -> donors          { where(donors: { id: donors } ) }
   scope :by_hazard_types,           -> hazard_types           { where(hazard_types: { id: hazard_types } ) }
   scope :by_countries,              -> countries              { where(locations: { iso: countries } ) }
-  scope :by_regions,                 -> regions               { where(locations: { region: regions } ) }
+  scope :by_regions,                -> regions               { where(locations: { region: regions } ) }
   scope :by_intervention_types,     -> intervention_types     { where(intervention_type:  intervention_types) }
   scope :by_nature_based_solutions, -> nature_based_solutions { where( nature_based_solutions: { id: nature_based_solutions } ) }
   scope :from_cost,                 -> starting_cost          { where('projects.estimated_cost >= ?', starting_cost) }
   scope :to_cost,                   -> ending_cost            { where('projects.estimated_cost <= ?', ending_cost) }
 
   def self.fetch_all(options={})
-    projects = Project.eager_load([:locations, :co_benefits_of_interventions, :primary_benefits_of_interventions, :organizations, :nature_based_solutions, :hazard_types, :nature_based_solutions]).published
+    projects = Project.eager_load([:locations, :co_benefits_of_interventions, :primary_benefits_of_interventions, :organizations, :donors, :nature_based_solutions, :hazard_types, :nature_based_solutions]).published
     projects = projects.by_name(options[:name])                                      if options[:name]
     projects = projects.by_scales(options[:scales])                                  if options[:scales]
     projects = projects.by_organizations(options[:organizations])                    if options[:organizations]
+    projects = projects.by_donors(options[:donors])                                  if options[:donors]
     projects = projects.by_countries(options[:countries])                            if options[:countries]
     projects = projects.by_regions(options[:regions])                                if options[:regions]
     projects = projects.by_hazard_types(options[:hazard_types])                      if options[:hazard_types]

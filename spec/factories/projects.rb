@@ -19,6 +19,7 @@
 #  references                  :text
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
+#  benefit_details             :text
 #
 
 FactoryGirl.define do

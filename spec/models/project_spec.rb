@@ -19,6 +19,7 @@
 #  references                  :text
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
+#  benefit_details             :text
 #
 
 require 'rails_helper'
@@ -81,6 +82,7 @@ RSpec.describe Project, type: :model do
       @nbs = create(:nature_based_solution)
       @ht = create(:hazard_type)
       @organization = create(:organization, name: 'aaa')
+      @donor = create(:donor, name: 'ddd')
       @not_found_organization = create(:organization, name: 'zzz')
       @location = create(:location, iso: 'SPA')
       @project.co_benefits_of_interventions << @cbf
@@ -88,6 +90,7 @@ RSpec.describe Project, type: :model do
       @project.nature_based_solutions << @nbs
       @project.hazard_types << @ht
       @project.organizations << @organization
+      @project.donors << @donor
       @project.locations << @location
       @not_found_project = create(:project, status: 'published', name: 'zzzzz test project')
       @not_found_project.organizations << @not_found_organization
@@ -104,6 +107,11 @@ RSpec.describe Project, type: :model do
     end
     it "can be searchable by organizations" do
       projects = Project.fetch_all(organizations: [@organization.id])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by donors" do
+      projects = Project.fetch_all(donors: [@donor.id])
       expect(projects).to include(@project)
       expect(projects).not_to include(@not_found_project)
     end

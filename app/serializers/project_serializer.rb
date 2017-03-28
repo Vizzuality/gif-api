@@ -19,11 +19,13 @@
 #  references                  :text
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
+#  benefit_details             :text
 #
 
 class ProjectSerializer < ActiveModel::Serializer
   cache key: 'project'
-  attributes :id, :name, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :summary, :start_year, :completion_year, :implementation_status, :intervention_type, :learn_more, :references
+  attributes :id, :name, :scale, :estimated_cost, :estimated_monetary_benefits, :benefit_details, :original_currency, :summary, :start_year, :completion_year, :implementation_status, :intervention_type, :learn_more, :references
+  has_many :donors, serializer: DonorSerializer
   has_many :co_benefits_of_interventions, serializer: CoBenefitsOfInterventionSerializer
   has_many :primary_benefits_of_interventions, serializer: PrimaryBenefitsOfInterventionSerializer
   has_many :hazard_types, serializer:  HazardTypeSerializer

@@ -31,5 +31,6 @@ module Gif
         resource '*', headers: :any, methods: [:get, :post, :options]
       end
     end
+    config.autoload_paths += %W(#{Rails.root}/app/excel_importer #{Rails.root}/app/excel_importer/entities)
   end
 end
