@@ -57,9 +57,9 @@ class ProjectImporter
     project.completion_year = data['Completion Year (if applicable)']
     project.learn_more = data['URL']
     project.references = data['URL (for further information)']
-    project.scale = self.validate_in_constants(data['Scale'], Project::SCALES)
-    project.intervention_type = self.validate_in_constants(data['Intervention Type'], Project::INTERVENTION_TYPES)
-    project.implementation_status = self.validate_in_constants(data['Implementation Status'], Project::IMPLEMENTATION_STATUSES)
+    project.scale = self.find_in_constants(data['Scale'], Project::SCALES)
+    project.intervention_type = self.find_in_constants(data['Intervention Type'], Project::INTERVENTION_TYPES)
+    project.implementation_status = self.find_in_constants(data['Implementation Status'], Project::IMPLEMENTATION_STATUSES)
 
     organizations = self.find_or_create_some_by_name!(data['Organization'], Organization)
     donors = self.find_or_create_some_by_name!(data['Main donor'], Donor)
@@ -74,23 +74,23 @@ class ProjectImporter
     if project.valid? && @errors == []
       project.status = 1
       project.save!
-      project.organizations = organizations
-      project.donors = donors
-      project.primary_benefits_of_interventions = primary_benefits_of_interventions
-      project.co_benefits_of_interventions = co_benefits_of_interventions
-      project.nature_based_solutions = nature_based_solutions
-      project.hazard_types = hazard_types
-      project.locations = locations
+      project.organizations = organizations if organizations.present?
+      project.donors = donors if donors.present?
+      project.primary_benefits_of_interventions = primary_benefits_of_interventions if primary_benefits_of_interventions.present?
+      project.co_benefits_of_interventions = co_benefits_of_interventions if co_benefits_of_interventions.present?
+      project.nature_based_solutions = nature_based_solutions if nature_based_solutions.present?
+      project.hazard_types = hazard_types if hazard_types.present?
+      project.locations = locations if locations.present?
       return true
     else
-      @errors << { project: project.errors.full_messages }
+      @errors << { project: project.errors.full_messages } if project.errors.any?
       Rails.logger.info @errors
       return false
     end
   end
 
-  def validate_in_constants(string=nil, constant)
-    if string.present? && constant.include?(string)
+  def find_in_constants(string=nil, constant)
+    if string.present? && constant.include?(string.downcase)
       string.downcase
     else
       nil
@@ -137,14 +137,13 @@ class ProjectImporter
       locations = []
       ary.each do |code|
         adm_levels = code.split('.')
-        location = Location.where(adm0_code: adm_levels[0]) if adm_levels[0].present?
-        location = location.where(adm1_code: adm_levels[1]) if adm_levels[1].present?
-        location = location.where(adm2_code: adm_levels[2]) if adm_levels[2].present?
+        level = adm_levels.size - 1
+        location = Location.where("adm#{level}_code": adm_levels[level])
         location = location.first
         if location.present?
           locations << location
         else
-          @errors << {location: "there is no location with code #{code}"}
+          @errors << {location: "there is no location with code #{code} and admin level #{level}"}
         end
       end
       locations

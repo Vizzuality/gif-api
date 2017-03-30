@@ -29,7 +29,7 @@ if HazardType.all.size == 0
 end
 if Location.all.size == 0
   filename = File.expand_path(File.join(Rails.root, 'data', 'locations.csv'))
-  CSV.foreach(filename, headers: true, col_sep: ";", encoding: 'ISO-8859-1') do |row|
+  CSV.foreach(filename, headers: true, col_sep: ",", encoding: 'ISO-8859-1') do |row|
     Location.create!(row.to_hash)
   end
   puts "locations created"
