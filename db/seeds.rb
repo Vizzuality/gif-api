@@ -1,13 +1,13 @@
 require 'csv'
 if CoBenefitsOfIntervention.all.size == 0
-  bf = ["agriculture, fisheries & forestry income", "employment, enterprise & property", "public health", "tourism & recreation", "biodiversity", "carbon sequestration", "other"]
+  bf = ["agriculture, fisheries & forestry income", "employment, enterprise & property", "public health", "tourism & recreation", "biodiversity", "carbon sequestration", "improved water quality & supply", "other"]
   bf.each do |b|
     CoBenefitsOfIntervention.create!(name: b)
   end
   puts "co-benefits created"
 end
 if PrimaryBenefitsOfIntervention.all.size == 0
-  bf = ["coastal energy management", "shoreline stabilization & accretion", "wind speed reduction", "redirection & drainage of flood & storm water", "storage & infiltration of flood & storm water", "reduced infrastructure loss", "slope stabilization", "soil composition maintained", "groundwater recharge & water table stabilization", "other"]
+  bf = ["coastal energy management", "shoreline stabilization & accretion", "wind speed reduction", "redirection & drainage of flood & storm water", "storage & infiltration of flood & storm water", "reduced infrastructure loss", "slope stabilization", "soil composition maintained", "groundwater recharge & water table stabilization", "saline intrusion reduced", "other"]
   bf.each do |b|
     PrimaryBenefitsOfIntervention.create!(name: b)
   end

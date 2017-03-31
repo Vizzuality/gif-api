@@ -76,7 +76,7 @@ RSpec.describe Project, type: :model do
   end
   context "scopes" do
     before :each do
-      @project = create(:project, name: 'aaaaa real project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'pipeline', intervention_type: 'grey', status: 'published')
+      @project = create(:project, name: 'aaaaa real project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'ongoing', intervention_type: 'grey', status: 'published')
       @cbf = create(:co_benefits_of_intervention)
       @pbf = create(:primary_benefits_of_intervention)
       @nbs = create(:nature_based_solution)
@@ -92,7 +92,8 @@ RSpec.describe Project, type: :model do
       @project.organizations << @organization
       @project.donors << @donor
       @project.locations << @location
-      @not_found_project = create(:project, status: 'published', name: 'zzzzz test project')
+      @project.reload
+      @not_found_project = create(:project, status: 'published', name: 'zzzzz test project', implementation_status: 'pipeline')
       @not_found_project.organizations << @not_found_organization
     end
     it "can be searchable by name" do
@@ -102,6 +103,11 @@ RSpec.describe Project, type: :model do
     end
     it "can be searchable by scales" do
       projects = Project.fetch_all(scales:[@project.scale])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by implementation status" do
+      projects = Project.fetch_all(status:[@project.implementation_status])
       expect(projects).to include(@project)
       expect(projects).not_to include(@not_found_project)
     end
@@ -137,6 +143,16 @@ RSpec.describe Project, type: :model do
     end
     it "can be searchable by nature based solutions" do
       projects = Project.fetch_all(nature_based_solutions: [@nbs.id])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by primary benefits" do
+      projects = Project.fetch_all(primary_benefits: [@pbf.id])
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by co-benefits" do
+      projects = Project.fetch_all(co_benefits: [@cbf.id])
       expect(projects).to include(@project)
       expect(projects).not_to include(@not_found_project)
     end

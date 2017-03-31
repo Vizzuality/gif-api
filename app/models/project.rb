@@ -47,10 +47,13 @@ class Project < ApplicationRecord
   scope :by_name,                   -> name                   { where('projects.name ~ ?', name) }
   scope :by_scales,                 -> scales                 { where(scale: scales) }
   scope :by_organizations,          -> organizations          { where(organizations: { id: organizations } ) }
-  scope :by_donors,                 -> donors          { where(donors: { id: donors } ) }
+  scope :by_donors,                 -> donors                 { where(donors: { id: donors } ) }
   scope :by_hazard_types,           -> hazard_types           { where(hazard_types: { id: hazard_types } ) }
+  scope :by_co_benefits,            -> co_benefits            { where(co_benefits_of_interventions: { id: co_benefits } ) }
+  scope :by_status,                 -> status                 { where(implementation_status: status) }
+  scope :by_primary_benefits,       -> primary_benefits       { where(primary_benefits_of_interventions: { id: primary_benefits } ) }
   scope :by_countries,              -> countries              { where(locations: { iso: countries } ) }
-  scope :by_regions,                -> regions               { where(locations: { region: regions } ) }
+  scope :by_regions,                -> regions                { where(locations: { region: regions } ) }
   scope :by_intervention_types,     -> intervention_types     { where(intervention_type:  intervention_types) }
   scope :by_nature_based_solutions, -> nature_based_solutions { where( nature_based_solutions: { id: nature_based_solutions } ) }
   scope :from_cost,                 -> starting_cost          { where('projects.estimated_cost >= ?', starting_cost) }
@@ -67,6 +70,9 @@ class Project < ApplicationRecord
     projects = projects.by_hazard_types(options[:hazard_types])                      if options[:hazard_types]
     projects = projects.by_intervention_types(options[:intervention_types])          if options[:intervention_types]
     projects = projects.by_nature_based_solutions(options[:nature_based_solutions])  if options[:nature_based_solutions]
+    projects = projects.by_co_benefits(options[:co_benefits])                        if options[:co_benefits]
+    projects = projects.by_primary_benefits(options[:primary_benefits])              if options[:primary_benefits]
+    projects = projects.by_status(options[:status])                                  if options[:status]
     projects = projects.from_cost(options[:from_cost])                               if options[:from_cost]
     projects = projects.to_cost(options[:to_cost])                                   if options[:to_cost]
     projects = projects.offset(options[:offset])                                     if options[:offset]
