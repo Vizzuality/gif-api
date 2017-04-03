@@ -28,6 +28,7 @@ class Project < ApplicationRecord
   SCALES = %w{local regional national international}
   enum status: [:under_revision, :published, :unpublished]
   has_many :organizations_projects,dependent: :nullify
+  attr_accessor :location_codes
   has_many :organizations, through: :organizations_projects,dependent: :nullify
   has_many :donors_projects,dependent: :nullify
   has_many :donors, through: :donors_projects,dependent: :nullify
@@ -43,6 +44,9 @@ class Project < ApplicationRecord
   validates :start_year, numericality: true, allow_nil: true
   validates :completion_year, numericality: true, allow_nil: true
   validate :years_timeline
+
+  before_validation :set_locations!, if: Proc.new { |project| project.location_codes.present? }
+
   scope :publihsed,                 ->                        { where(status: :published) }
   scope :by_name,                   -> name                   { where('projects.name ~ ?', name) }
   scope :by_scales,                 -> scales                 { where(scale: scales) }
@@ -79,6 +83,43 @@ class Project < ApplicationRecord
     projects = projects.limit(options[:limit])                                       if options[:limit]
     projects = projects.order(self.get_order(options))
     projects.distinct
+  end
+
+  def current_location_codes
+    location_codes = []
+    self.locations.each do |l|
+      if l.adm0_code.present?
+       location_code = l.adm0_code
+      else
+        return ''
+      end
+      location_code += ".#{l.adm1_code}" if l.adm1_code.present?
+      location_code += ".#{l.adm2_code}" if l.adm2_code.present?
+      location_codes << location_code
+    end
+    location_codes.join('|')
+  end
+
+  def set_locations!
+    candidates = self.location_codes
+    if candidates.present?
+      ary = candidates.to_s.split('|').reject { |i| i.empty? }
+      new_locations = []
+      ary.each do |code|
+        adm_levels = code.split('.')
+        level = adm_levels.size - 1
+        location = Location.where("adm#{level}_code": adm_levels[level])
+        location = location.first
+        if location.present?
+          new_locations << location
+        else
+          errors.add(:project_location_codes, "there is no location with code #{code} and admin level #{level}")
+        end
+      end
+      self.locations = new_locations
+    else
+      nil
+    end
   end
 
   def self.get_order(options={})
