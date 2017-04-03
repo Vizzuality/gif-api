@@ -3,7 +3,7 @@ ActiveAdmin.register_page "Excel Upload" do
 
 
   controller do
-    #skip_before_action :verify_authenticity_token
+    skip_before_action :verify_authenticity_token
     def index
       render 'admin/excel_upload/new', layout: 'active_admin'
     end
