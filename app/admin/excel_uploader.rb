@@ -1,5 +1,5 @@
 ActiveAdmin.register_page "Excel Upload" do
-  menu parent: "Site Admin", priority: 10
+  menu parent: "Projects admin", priority: 0
 
 
   controller do

@@ -35,9 +35,39 @@
 #  has_and_belongs_to_many :hazard_types,dependent: :nullify
 #  has_and_belongs_to_many :locations,dependent: :nullify
 ActiveAdmin.register Project do
+  menu parent: "Projects admin", priority: 0
+
+  filter :project_uid
+  filter :name
+  filter :status, as: :select, collection: [:under_revision, :published, :unpublished]
+  filter :organizations
+  filter :donors
+  filter :primary_benefits_of_interventions
+  filter :co_benefits_of_interventions
+  filter :nature_based_solutions
+  filter :hazard_types
+  filter :scale, as: :select, collection: Project::SCALES
+  filter :implementation_status, as: :select, collection: Project::IMPLEMENTATION_STATUSES
+  filter :intervention_type, as: :select, collection: Project::INTERVENTION_TYPES
+  filter :estimated_cost
+  filter :estimated_monetary_benefits
+  filter :original_currency, as: :select
+  filter :start_year
+  filter :completion_year
+  filter :created_at
 
   permit_params :name, :project_uid, :status, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :start_year, :completion_year, :implementation_status, :intervention_type, :summary, :learn_more, :references, :benefit_details, :location_codes, organization_ids:[], donor_ids:[], primary_benefits_of_intervention_ids:[], co_benefits_of_intervention_ids:[], nature_based_solution_ids:[], hazard_type_ids:[]
-
+  index do
+    selectable_column
+    column :id
+    column :project_uid
+    column :name
+    column :status
+    column :organizations do |obj|
+      obj.organizations.map{|a| a.name}.join(" | ")
+    end
+    actions
+  end
   form do |f|
     f.semantic_errors *f.object.errors.keys
     f.inputs do
