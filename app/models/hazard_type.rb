@@ -10,4 +10,5 @@
 
 class HazardType < ApplicationRecord
   has_and_belongs_to_many :projects, dependent: :nullify
+  include Downcaseable
 end
