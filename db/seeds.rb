@@ -14,7 +14,7 @@ if PrimaryBenefitsOfIntervention.all.size == 0
   puts "primary benefits created"
 end
 if NatureBasedSolution.all.size == 0
-  nbs = ["urban green spaces", "forests & vegetation", "rivers & floodplains", "terrestrial wetlands", "coastal wetlands", "dunes", " mangroves", "coral reefs & living shorelines", "other"]
+  nbs = ["urban green spaces", "forests & vegetation", "rivers & floodplains", "terrestrial wetlands", "coastal wetlands", "dunes", "mangroves", "coral reefs & living shorelines", "other"]
   nbs.each do |n|
     NatureBasedSolution.create!(name: n)
   end

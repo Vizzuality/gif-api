@@ -9,7 +9,7 @@ class ExcelImporter
 
   attr_reader :errors
 
-  EXCEL_HEADERS = ["PID", "Project Name", "Organization", "Main donor", "Scale", "Locations", "Hazard Type", "Intervention Type", "Nature-Based Solutions", "Estimated Cost (in millions)", "Estimated Monetary Benefits (in millions)", "Monetary Benefit details", "Original Currency", "Primary Benefits of Intervention", "Co-Benefits of Intervention", "Summary", "Start Year", "Completion Year", "Implementation Status", "URL", "Additional URLs"]
+  EXCEL_HEADERS = ["PID", "Project Name", "Organization", "Main donor", "Scale", "Country", "Province", "District", "Locations", "Hazard Type", "Intervention Type", "Nature-Based Solutions", "Estimated Cost (in millions)", "Estimated Monetary Benefits (in millions)", "Monetary Benefit details", "Original Currency", "Primary Benefits of Intervention", "Co-Benefits of Intervention", "Summary", "Start Year", "Completion Year", "Implementation Status", "URL", "Additional URLs"]
 
 
   def import!
