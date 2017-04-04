@@ -1,6 +1,6 @@
 require 'csv'
 if CoBenefitsOfIntervention.all.size == 0
-  bf = ["agriculture, fisheries & forestry income", "employment, enterprise & property", "public health", "tourism & recreation", "biodiversity", "carbon sequestration", "improved water quality & supply", "other"]
+  bf = ["agriculture, fisheries & forestry income", "employment, enterprise & property", "public health", "tourism & recreation", "biodiversity", "carbon sequestration", "improved water quality & supply", "urban microclimate improved", "other"]
   bf.each do |b|
     CoBenefitsOfIntervention.create!(name: b)
   end
@@ -14,7 +14,7 @@ if PrimaryBenefitsOfIntervention.all.size == 0
   puts "primary benefits created"
 end
 if NatureBasedSolution.all.size == 0
-  nbs = ["urban green spaces", "forests & vegetation", "rivers & floodplains", "terrestrial wetlands", "coastal wetlands", "dunes", " mangroves", "coral reefs and living shorelines", "other"]
+  nbs = ["urban green spaces", "forests & vegetation", "rivers & floodplains", "terrestrial wetlands", "coastal wetlands", "dunes", " mangroves", "coral reefs & living shorelines", "other"]
   nbs.each do |n|
     NatureBasedSolution.create!(name: n)
   end

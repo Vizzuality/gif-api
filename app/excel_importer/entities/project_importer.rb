@@ -50,13 +50,13 @@ class ProjectImporter
     project.name = data['Project Name']&.strip
     project.estimated_cost = data['Estimated Cost (in millions)']
     project.estimated_monetary_benefits = data['Estimated Monetary Benefits (in millions)']
-    project.benefit_details = data['Benefit details']
+    project.benefit_details = data['Monetary Benefit details']
     project.original_currency = data['Original Currency']
     project.summary = data['Summary']
     project.start_year = data['Start Year']
-    project.completion_year = data['Completion Year (if applicable)']
+    project.completion_year = data['Completion Year']
     project.learn_more = data['URL']
-    project.references = data['URL (for further information)']
+    project.references = data['Additional URLs']
     project.scale = self.find_in_constants(data['Scale'], Project::SCALES)
     project.intervention_type = self.find_in_constants(data['Intervention Type'], Project::INTERVENTION_TYPES)
     project.implementation_status = self.find_in_constants(data['Implementation Status'], Project::IMPLEMENTATION_STATUSES)
