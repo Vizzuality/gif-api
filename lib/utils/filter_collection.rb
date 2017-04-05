@@ -8,7 +8,7 @@ module FilterCollection
     primary_benefits = PrimaryBenefitsOfIntervention.all.select(:id, :name)
     co_benefits = CoBenefitsOfIntervention.all.select(:id, :name)
     implementation_statuses = Project::IMPLEMENTATION_STATUSES
-    cost_min = Project.where.not(estimated_cost: nil)order('estimated_cost ASC').limit(1).pluck(:estimated_cost).join.to_f
+    cost_min = Project.where.not(estimated_cost: nil).order('estimated_cost ASC').limit(1).pluck(:estimated_cost).join.to_f
     cost_max = Project.where.not(estimated_cost: nil).order('estimated_cost DESC').limit(1).pluck(:estimated_cost).join.to_f
     filters = {}
     filters[:scales] = scales
