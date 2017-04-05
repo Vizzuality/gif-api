@@ -1,5 +1,8 @@
 ActiveAdmin.register PrimaryBenefitsOfIntervention do
   menu parent: "Entities", priority: 1
+
+  permit_params :name
+
   index do
     selectable_column
     column :id
