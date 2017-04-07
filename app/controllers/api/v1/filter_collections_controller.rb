@@ -1,4 +1,3 @@
-require 'filter_collection'
 module Api::V1
   class FilterCollectionsController < ApiController
     def index

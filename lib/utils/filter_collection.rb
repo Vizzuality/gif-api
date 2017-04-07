@@ -1,8 +1,8 @@
 module FilterCollection
   def self.fetch_all
     scales = Project::SCALES
-    regions = Location.all.pluck(:region).uniq.compact.sort_by{ |m| m.downcase }
-    countries = Location.joins(:projects).select(:id, :adm0_name).order('adm0_name ASC').uniq.compact
+    regions = Location.all.pluck(:region).compact.uniq.sort_by{ |m| m.downcase }
+    countries = Location.joins(:projects).where(level: 0).select(:id, :adm0_name).order('adm0_name ASC').compact.uniq
     organizations = Organization.all.select(:id, :name).order('name ASC')
     hazard_types = HazardType.all.select(:id, :name).order('name ASC')
     intervention_types = Project::INTERVENTION_TYPES.sort_by{ |m| m.downcase }
