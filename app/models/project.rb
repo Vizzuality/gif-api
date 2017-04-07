@@ -23,8 +23,8 @@
 #
 
 class Project < ApplicationRecord
-  IMPLEMENTATION_STATUSES = %w{pipeline ongoing completed}
-  INTERVENTION_TYPES = %w{hybrid green grey}
+  IMPLEMENTATION_STATUSES = %w{ongoing completed}
+  INTERVENTION_TYPES = %w{hybrid green}
   SCALES = %w{local regional national international}
   enum status: [:under_revision, :published, :unpublished]
   has_many :organizations_projects,dependent: :nullify
