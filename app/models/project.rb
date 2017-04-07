@@ -48,7 +48,7 @@ class Project < ApplicationRecord
   before_validation :set_locations!, if: Proc.new { |project| project.location_codes.present? }
 
   scope :publihsed,                 ->                        { where(status: :published) }
-  scope :by_name,                   -> name                   { where('projects.name ~ ?', name) }
+  scope :by_name,                   -> name                   { where('projects.name ilike ?', "%%#{name}%%") }
   scope :by_scales,                 -> scales                 { where(scale: scales) }
   scope :by_organizations,          -> organizations          { where(organizations: { id: organizations } ) }
   scope :by_donors,                 -> donors                 { where(donors: { id: donors } ) }

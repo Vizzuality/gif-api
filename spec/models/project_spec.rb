@@ -97,7 +97,7 @@ RSpec.describe Project, type: :model do
       @not_found_project.organizations << @not_found_organization
     end
     it "can be searchable by name" do
-      projects = Project.fetch_all(name: 'real')
+      projects = Project.fetch_all(name: 'Real')
       expect(projects).to include(@project)
       expect(projects).not_to include(@not_found_project)
     end
