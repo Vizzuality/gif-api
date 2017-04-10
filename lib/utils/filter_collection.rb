@@ -2,7 +2,7 @@ module FilterCollection
   def self.fetch_all
     scales = Project::SCALES
     regions = Location.all.pluck(:region).compact.uniq.sort_by{ |m| m.downcase }
-    countries = Location.joins(:projects).where(level: 0).select(:iso, :adm0_name).order('adm0_name ASC').compact.uniq
+    countries = Location.joins(:projects).where(level: 0).select(:iso, :adm0_name).order('adm0_name ASC').compact.uniq{ |u| u.iso }
     organizations = Organization.all.select(:id, :name).order('name ASC')
     hazard_types = HazardType.all.select(:id, :name).order('name ASC')
     intervention_types = Project::INTERVENTION_TYPES.sort_by{ |m| m.downcase }
