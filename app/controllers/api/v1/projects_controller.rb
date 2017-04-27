@@ -1,12 +1,19 @@
 module Api::V1
   class ProjectsController < ApiController
+    before_action :get_project, only: [:show, :related]
     def index
       projects = Project.fetch_all(filter_params)
       render json: projects, each_serializer: ProjectSerializer
     end
     def show
-      project = Project.find_by_lug_or_id(params[:id])
-      render json: project, serializer: ProjectSerializer
+      render json: @project, serializer: ProjectSerializer
+    end
+    def related
+      relateds = @project.related
+      render json: relateds, each_serializer: ProjectSerializer
+    end
+    def get_project
+      @project = Project.find_by_lug_or_id(params[:id])
     end
     private
       def filter_params

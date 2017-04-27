@@ -97,12 +97,35 @@ class Project < ApplicationRecord
     projects = projects.order(self.get_order(options))
     projects.distinct
   end
+
   def self.find_by_lug_or_id(param)
     if param.to_i.to_s == param.to_s
       find(param)
     else
       friendly.find(param)
     end
+  end
+
+  def self.get_order(options={})
+    direction = options[:direction] && %w{asc desc}.include?(options[:direction]) ? options[:direction] : 'asc'
+    if options[:order]
+      order = 'projects.name'                       if options[:order] == 'name'
+      order = 'organizations.name'                  if options[:order] == 'organization'
+      order = 'locations.adm0_name'                 if options[:order] == 'country'
+      order = 'hazard_types.name'                   if options[:order] == 'hazard_type'
+      order = 'nature_based_solutions.name'         if options[:order] == 'nature_based_solution'
+      order = 'projects.start_year'                 if options[:order] == 'start_year'
+      order = 'projects.completion_year'            if options[:order] == 'completion_year'
+    end
+    order ||= 'projects.created_at'
+    "#{order} #{direction}"
+  end
+
+  def related
+    hazard_types = self.hazard_types.pluck(:id)
+    countries = self.locations.pluck(:iso)
+    related = Project.joins([:hazard_types, :locations]).by_hazard_types(hazard_types).by_countries(countries).where.not(id: self.id).limit(3)
+    related
   end
 
   def current_location_codes
@@ -140,21 +163,6 @@ class Project < ApplicationRecord
     else
       nil
     end
-  end
-
-  def self.get_order(options={})
-    direction = options[:direction] && %w{asc desc}.include?(options[:direction]) ? options[:direction] : 'asc'
-    if options[:order]
-      order = 'projects.name'                       if options[:order] == 'name'
-      order = 'organizations.name'                  if options[:order] == 'organization'
-      order = 'locations.adm0_name'                 if options[:order] == 'country'
-      order = 'hazard_types.name'                   if options[:order] == 'hazard_type'
-      order = 'nature_based_solutions.name'         if options[:order] == 'nature_based_solution'
-      order = 'projects.start_year'                 if options[:order] == 'start_year'
-      order = 'projects.completion_year'            if options[:order] == 'completion_year'
-    end
-    order ||= 'projects.created_at'
-    "#{order} #{direction}"
   end
 
   private

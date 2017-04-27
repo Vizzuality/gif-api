@@ -191,4 +191,32 @@ RSpec.describe Project, type: :model do
       expect(projects.size).to eq(1)
     end
   end
+  context "instance methods" do
+    before :each do
+      @project = create(:project, name: 'aaaaa real project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'ongoing', intervention_type: 'hybrid', status: 'published', summary: 'This is The Thing')
+      @cbf = create(:co_benefits_of_intervention)
+      @pbf = create(:primary_benefits_of_intervention)
+      @nbs = create(:nature_based_solution)
+      @ht = create(:hazard_type)
+      @organization = create(:organization, name: 'aaa')
+      @donor = create(:donor, name: 'ddd')
+      @not_found_organization = create(:organization, name: 'zzz')
+      @location = create(:location, iso: 'SPA')
+      @project.co_benefits_of_interventions << @cbf
+      @project.primary_benefits_of_interventions << @pbf
+      @project.nature_based_solutions << @nbs
+      @project.hazard_types << @ht
+      @project.organizations << @organization
+      @project.donors << @donor
+      @project.locations << @location
+      @project.reload
+      @project2 = create(:project, name: 'bbbbb real project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'ongoing', intervention_type: 'hybrid', status: 'published', summary: 'This is The Thing')
+      @project2.hazard_types << @ht
+      @project2.locations << @location
+      @project2.reload
+    end
+    it 'finds related projects' do
+      expect(@project.related).to include(@project2)
+    end
+  end
 end

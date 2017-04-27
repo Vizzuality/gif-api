@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     scope module: :v1 do
       resources :projects, only: [:index, :show]
       get '/filters', to: 'filter_collections#index'
+      get '/projects/:id/related', to: 'projects#related'
     end
   end
 end
