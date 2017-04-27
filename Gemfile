@@ -29,6 +29,7 @@ gem 'dotenv-rails', '2.0.1'
 gem 'rack-cors', require: 'rack/cors'
 gem 'roo'
 gem 'faker'
+gem 'friendly_id', '~> 5.1.0'
 
 group :development, :test do
   gem 'byebug', platform: :mri

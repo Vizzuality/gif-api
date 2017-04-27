@@ -23,6 +23,15 @@
 #
 
 class Project < ApplicationRecord
+  extend FriendlyId
+  friendly_id :name, use: :slugged
+  def slug_candidates
+    [
+      :name,
+      [:name, :project_uid]
+    ]
+  end
+  attr_accessor :slug
   IMPLEMENTATION_STATUSES = %w{ongoing completed}
   INTERVENTION_TYPES = %w{hybrid green}
   SCALES = %w{local regional national international}
