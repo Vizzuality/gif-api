@@ -3,7 +3,14 @@ module Api::V1
     before_action :get_project, only: [:show, :related]
     def index
       projects = Project.fetch_all(filter_params)
-      render json: projects, each_serializer: ProjectSerializer
+      respond_to do |format|
+        format.json do
+          render json: projects, each_serializer: ProjectSerializer
+        end
+        format.csv do
+          send_data projects.to_csv, filename: "users-#{Date.today}.csv"
+        end
+      end
     end
     def show
       render json: @project, serializer: ProjectSerializer

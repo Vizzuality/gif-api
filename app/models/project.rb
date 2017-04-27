@@ -24,6 +24,7 @@
 #
 
 class Project < ApplicationRecord
+  require 'csv'
   extend FriendlyId
   friendly_id :name, use: :slugged
   def slug_candidates
@@ -119,6 +120,44 @@ class Project < ApplicationRecord
     end
     order ||= 'projects.created_at'
     "#{order} #{direction}"
+  end
+
+  def self.to_csv
+    columns = ExcelImporter::EXCEL_HEADERS
+    #EXCEL_HEADERS = ["PID", "Project Name", "Organization", "Main donor", "Scale", "Country", "Province", "District", "Locations", "Hazard Type", "Intervention Type", "Nature-Based Solutions", "Estimated Cost (in millions)", "Estimated Monetary Benefits (in millions)", "Monetary Benefit details", "Original Currency", "Primary Benefits of Intervention", "Co-Benefits of Intervention", "Summary", "Start Year", "Completion Year", "Implementation Status", "URL", "Additional URLs"]
+
+    CSV.generate(headers: true) do |csv|
+      csv << columns
+      all.each do |project|
+        attributes = {}
+        attributes['PID'] = project.project_uid
+        attributes['Project Name'] = project.name
+        attributes['Estimated Cost (in millions)'] = project.estimated_cost
+        attributes['Estimated Monetary Benefits (in millions)'] = project.estimated_monetary_benefits
+        attributes['Monetary Benefit details'] = project.benefit_details
+        attributes['Original Currency'] = project.original_currency
+        attributes['Summary'] = project.summary
+        attributes['Start Year'] = project.start_year
+        attributes['Completion Year'] = project.completion_year
+        attributes['URL'] = project.learn_more
+        attributes['Additional URLs'] = project.references
+        attributes['Scale'] = project.scale
+        attributes['Intervention Type'] = project.intervention_type
+        attributes['Implementation Status'] = project.implementation_status
+
+        attributes['Organization'] = project.organizations.pluck(:name).join("|")
+        attributes['Main donor'] = project.donors.pluck(:name).join("|")
+        attributes['Primary Benefits of Intervention'] = project.primary_benefits_of_interventions.pluck(:name).join("|")
+        attributes['Co-Benefits of Intervention'] = project.co_benefits_of_interventions.pluck(:name).join("|")
+        attributes['Nature-Based Solutions'] = project.nature_based_solutions.pluck(:name).join("|")
+        attributes['Hazard Type'] = project.hazard_types.pluck(:name).join("|")
+        attributes["Locations"] = project.locations.pluck(:id).join("|")
+        attributes["Country"] = project.locations.pluck(:adm0_name).join("|")
+        attributes["Province"] = project.locations.pluck(:adm1_name).join("|")
+        attributes["District"] = project.locations.pluck(:adm2_name).join("|")
+        csv << attributes.values_at(*columns)
+      end
+    end
   end
 
   def related
