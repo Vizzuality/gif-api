@@ -77,7 +77,7 @@ RSpec.describe Project, type: :model do
   end
   context "scopes" do
     before :each do
-      @project = create(:project, name: 'aaaaa real project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'ongoing', intervention_type: 'hybrid', status: 'published')
+      @project = create(:project, name: 'aaaaa real project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'ongoing', intervention_type: 'hybrid', status: 'published', summary: 'This is The Thing')
       @cbf = create(:co_benefits_of_intervention)
       @pbf = create(:primary_benefits_of_intervention)
       @nbs = create(:nature_based_solution)
@@ -100,6 +100,18 @@ RSpec.describe Project, type: :model do
     it "can be searchable by name" do
       projects = Project.fetch_all(name: 'Real')
       expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can be searchable by description" do
+      projects = Project.fetch_all(description: 'thing')
+      expect(projects).to include(@project)
+      expect(projects).not_to include(@not_found_project)
+    end
+    it "can searches into name and description" do
+      projects = Project.fetch_all(q: 'thing')
+      projects2 = Project.fetch_all(q: 'real')
+      expect(projects).to include(@project)
+      expect(projects2).to include(@project)
       expect(projects).not_to include(@not_found_project)
     end
     it "can be searchable by scales" do

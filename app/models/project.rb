@@ -58,6 +58,8 @@ class Project < ApplicationRecord
 
   scope :publihsed,                 ->                        { where(status: :published) }
   scope :by_name,                   -> name                   { where('projects.name ilike ?', "%%#{name}%%") }
+  scope :by_description,            -> description            { where('projects.summary ilike ?', "%%#{description}%%") }
+  scope :by_text,                   -> text                   { by_name(text).or(by_description(text)) }
   scope :by_scales,                 -> scales                 { where(scale: scales) }
   scope :by_organizations,          -> organizations          { where(organizations: { id: organizations } ) }
   scope :by_donors,                 -> donors                 { where(donors: { id: donors } ) }
@@ -75,6 +77,8 @@ class Project < ApplicationRecord
   def self.fetch_all(options={})
     projects = Project.eager_load([:locations, :co_benefits_of_interventions, :primary_benefits_of_interventions, :organizations, :donors, :nature_based_solutions, :hazard_types, :nature_based_solutions]).published
     projects = projects.by_name(options[:name])                                      if options[:name]
+    projects = projects.by_description(options[:description])                        if options[:description]
+    projects = projects.by_text(options[:q])                                         if options[:q]
     projects = projects.by_scales(options[:scales])                                  if options[:scales]
     projects = projects.by_organizations(options[:organizations])                    if options[:organizations]
     projects = projects.by_donors(options[:donors])                                  if options[:donors]
