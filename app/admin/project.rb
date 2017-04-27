@@ -61,8 +61,8 @@ ActiveAdmin.register Project do
     selectable_column
     column :id
     column :project_uid
-    column :friendly_id do |obj|
-      obj.friendly_id
+    column :slug do |obj|
+      obj.slug
     end
     column :name
     column :status

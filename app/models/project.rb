@@ -20,6 +20,7 @@
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  benefit_details             :text
+#  slug                        :string
 #
 
 class Project < ApplicationRecord
@@ -31,7 +32,6 @@ class Project < ApplicationRecord
       [:name, :project_uid]
     ]
   end
-  attr_accessor :slug
   IMPLEMENTATION_STATUSES = %w{ongoing completed}
   INTERVENTION_TYPES = %w{hybrid green}
   SCALES = %w{local regional national international}
@@ -92,6 +92,13 @@ class Project < ApplicationRecord
     projects = projects.limit(options[:limit])                                       if options[:limit]
     projects = projects.order(self.get_order(options))
     projects.distinct
+  end
+  def self.find_by_lug_or_id(param)
+    if param.to_i.to_s == param.to_s
+      find(param)
+    else
+      friendly.find(param)
+    end
   end
 
   def current_location_codes

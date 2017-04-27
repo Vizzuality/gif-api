@@ -20,6 +20,7 @@
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  benefit_details             :text
+#  slug                        :string
 #
 
 FactoryGirl.define do
