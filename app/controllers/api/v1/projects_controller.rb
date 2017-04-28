@@ -1,6 +1,7 @@
 module Api::V1
   class ProjectsController < ApiController
     before_action :get_project, only: [:show, :related]
+    skip_before_action :authenticate_request, only: [:index, :show, :related, :get_project]
     def index
       projects = Project.fetch_all(filter_params)
       respond_to do |format|
@@ -21,6 +22,11 @@ module Api::V1
     end
     def get_project
       @project = Project.find_by_lug_or_id(params[:id])
+    end
+    def create
+      render json: 'OK'
+    end
+    def update
     end
     private
       def filter_params
