@@ -39,14 +39,14 @@ class Project < ApplicationRecord
   enum status: [:under_revision, :published, :unpublished]
   has_many :organizations_projects,dependent: :nullify
   attr_accessor :location_codes
-  has_many :organizations, through: :organizations_projects,dependent: :nullify
+  has_many :organizations, through: :organizations_projects, dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
   has_many :donors_projects,dependent: :nullify
-  has_many :donors, through: :donors_projects,dependent: :nullify
-  has_and_belongs_to_many :primary_benefits_of_interventions,dependent: :nullify
-  has_and_belongs_to_many :co_benefits_of_interventions,dependent: :nullify
-  has_and_belongs_to_many :nature_based_solutions,dependent: :nullify
-  has_and_belongs_to_many :hazard_types,dependent: :nullify
-  has_and_belongs_to_many :locations,dependent: :nullify
+  has_many :donors, through: :donors_projects,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
+  has_and_belongs_to_many :primary_benefits_of_interventions,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
+  has_and_belongs_to_many :co_benefits_of_interventions,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
+  has_and_belongs_to_many :nature_based_solutions,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
+  has_and_belongs_to_many :hazard_types,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
+  has_and_belongs_to_many :locations,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
   validates :name, presence: true, uniqueness: true
   validates_inclusion_of :implementation_status, in: IMPLEMENTATION_STATUSES, allow_nil: true
   validates_inclusion_of :scale, in: SCALES, allow_nil: true
@@ -209,6 +209,10 @@ class Project < ApplicationRecord
       if start_year.present? && completion_year.present? && completion_year < start_year
         errors.add(:completion_year, "can't be previous to Start year")
       end
+    end
+
+    def touch_updated_at(relation)
+      self.touch if persisted?
     end
 
 end

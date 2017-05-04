@@ -94,7 +94,7 @@ RSpec.describe Project, type: :model do
       @project.donors << @donor
       @project.locations << @location
       @project.reload
-      @not_found_project = create(:project, status: 'published', name: 'zzzzz test project', implementation_status: 'completed')
+      @not_found_project = create(:project, status: 'published', name: 'zzzzz test project', implementation_status: 'completed', summary: 'this not')
       @not_found_project.organizations << @not_found_organization
     end
     it "can be searchable by name" do
