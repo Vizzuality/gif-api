@@ -3,7 +3,6 @@ module Api
     class ApiController < ActionController::Base
       rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
       before_action :authenticate_request
-      skip_before_action  :verify_authenticity_token
 
       attr_reader :current_user
       helper_method :current_user
