@@ -1,5 +1,6 @@
 module Api
   module V1
+    skip_before_action  :verify_authenticity_token
     class ApiController < ActionController::Base
       protect_from_forgery with: :null_session
       rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
