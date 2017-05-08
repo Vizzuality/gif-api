@@ -28,7 +28,7 @@ module Gif
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '*', headers: :any, methods: [:get, :post, :options]
+        resource '*', headers: :any, methods: [:get, :post, :patch, :options]
       end
     end
     config.eager_load_paths += %W(#{Rails.root}/app/excel_importer #{Rails.root}/app/excel_importer/entities #{Rails.root}/lib/utils #{Rails.root}/app/commands)
