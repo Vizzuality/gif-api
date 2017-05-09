@@ -4,6 +4,7 @@ module FilterCollection
     regions = Location.all.pluck(:region).compact.uniq.sort_by{ |m| m.downcase }
     countries = Location.joins(:projects).select(:iso, :adm0_name).order('adm0_name ASC').compact.uniq{ |u| u.iso }
     organizations = Organization.all.select(:id, :name).order('name ASC')
+    donors = Donor.all.select(:id, :name).order('name ASC')
     hazard_types = HazardType.all.select(:id, :name).order('name ASC')
     intervention_types = Project::INTERVENTION_TYPES.sort_by{ |m| m.downcase }
     nature_based_solutions = NatureBasedSolution.all.select(:id, :name).order('name ASC')
@@ -16,6 +17,7 @@ module FilterCollection
     filters[:scales] = scales
     filters[:regions] = regions
     filters[:organizations] = organizations
+    filters[:donors] = donors
     filters[:countries] = countries
     filters[:hazard_types] = hazard_types
     filters[:intervention_types] = intervention_types
