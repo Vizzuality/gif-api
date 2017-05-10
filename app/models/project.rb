@@ -27,6 +27,8 @@ class Project < ApplicationRecord
   require 'csv'
   extend FriendlyId
   friendly_id :name, use: :slugged
+  acts_as_taggable
+  acts_as_taggable_on :organizations, :donors, :tags
   def slug_candidates
     [
       :name,

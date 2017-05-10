@@ -218,5 +218,17 @@ RSpec.describe Project, type: :model do
     it 'finds related projects' do
       expect(@project.related).to include(@project2)
     end
+    it 'can be tagged on organizations' do
+      @project.organization_list.add('org tag')
+      expect(@project.organization_list).to eq(['org tag'])
+    end
+    it 'can be tagged on donors' do
+      @project.organization_list.add('donor tag')
+      expect(@project.organization_list).to eq(['donor tag'])
+    end
+    it 'can be tagged on tags' do
+      @project.tag_list.add('tag tag')
+      expect(@project.tag_list).to eq(['tag tag'])
+    end
   end
 end

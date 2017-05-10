@@ -36,6 +36,11 @@
 #  has_and_belongs_to_many :locations,dependent: :nullify
 ActiveAdmin.register Project do
   menu parent: "Projects admin", priority: 0
+  controller do
+    def find_resource
+      scoped_collection.friendly.find(params[:id])
+    end
+  end
 
   filter :project_uid
   filter :name
@@ -56,7 +61,7 @@ ActiveAdmin.register Project do
   filter :completion_year
   filter :created_at
 
-  permit_params :name, :project_uid, :status, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :start_year, :completion_year, :implementation_status, :intervention_type, :summary, :learn_more, :references, :benefit_details, :location_codes, organization_ids:[], donor_ids:[], primary_benefits_of_intervention_ids:[], co_benefits_of_intervention_ids:[], nature_based_solution_ids:[], hazard_type_ids:[]
+  permit_params :name, :organization_list, :project_uid, :status, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :start_year, :completion_year, :implementation_status, :intervention_type, :summary, :learn_more, :references, :benefit_details, :location_codes, organization_ids:[], donor_ids:[], primary_benefits_of_intervention_ids:[], co_benefits_of_intervention_ids:[], nature_based_solution_ids:[], hazard_type_ids:[]
   index do
     selectable_column
     column :id
@@ -76,6 +81,7 @@ ActiveAdmin.register Project do
     f.inputs do
       f.input :name, as: :string
       f.input :project_uid
+      f.input :organization_list, as: :tags, multiple: :true, collection: ActsAsTaggableOn::Tagging.includes(:tag).where(context: 'organizations').map{ |tagging| tagging.tag.name }.uniq
       f.input :status, as: :select, collection: %w{under_revision published unpublished}
       f.input :location_codes, input_html: { value: object.current_location_codes }
       f.input :scale, as: :select, collection: Project::SCALES
