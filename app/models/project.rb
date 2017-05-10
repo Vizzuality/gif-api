@@ -76,6 +76,9 @@ class Project < ApplicationRecord
   scope :by_nature_based_solutions, -> nature_based_solutions { where( nature_based_solutions: { id: nature_based_solutions } ) }
   scope :from_cost,                 -> starting_cost          { where('projects.estimated_cost >= ?', starting_cost) }
   scope :to_cost,                   -> ending_cost            { where('projects.estimated_cost <= ?', ending_cost) }
+  scope :organization_tags_eq,      -> tags                   { tagged_with(tags, on: :organizations, any: true) }
+  scope :donor_tags_eq,             -> tags                   { tagged_with(tags, on: :donors, any: true) }
+  scope :tag_list,                  -> tags                   { tagged_with(tags, on: :tags, any: true) }
 
   def self.fetch_all(options={})
     projects = Project.eager_load([:locations, :co_benefits_of_interventions, :primary_benefits_of_interventions, :organizations, :donors, :nature_based_solutions, :hazard_types, :nature_based_solutions]).published
@@ -99,6 +102,10 @@ class Project < ApplicationRecord
     projects = projects.limit(options[:limit])                                       if options[:limit]
     projects = projects.order(self.get_order(options))
     projects.distinct
+  end
+
+  def self.ransackable_scopes(auth=nil)
+    %i(organization_tags_eq donor_tags_eq tag_list)
   end
 
   def self.find_by_lug_or_id(param)

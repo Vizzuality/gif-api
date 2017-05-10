@@ -44,6 +44,15 @@ ActiveAdmin.register Project do
 
   filter :project_uid
   filter :name
+  filter :organization_tags,
+    as: :select,
+    collection: ->{ ActsAsTaggableOn::Tagging.includes(:tag).where(context: 'organizations').map{ |tagging| tagging.tag.name }.uniq.sort_by(&:downcase) }
+  filter :donor_tags,
+    as: :select,
+    collection: ->{ ActsAsTaggableOn::Tagging.includes(:tag).where(context: 'donors').map{ |tagging| tagging.tag.name }.uniq.sort_by(&:downcase) }
+  filter :tag_list,
+    as: :select,
+    collection: ->{ ActsAsTaggableOn::Tagging.includes(:tag).where(context: 'tags').map{ |tagging| tagging.tag.name }.uniq.sort_by(&:downcase) }
   filter :status, as: :select, collection: [:under_revision, :published, :unpublished]
   filter :organizations
   filter :donors
@@ -61,7 +70,7 @@ ActiveAdmin.register Project do
   filter :completion_year
   filter :created_at
 
-  permit_params :name, :organization_list, :project_uid, :status, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :start_year, :completion_year, :implementation_status, :intervention_type, :summary, :learn_more, :references, :benefit_details, :location_codes, organization_ids:[], donor_ids:[], primary_benefits_of_intervention_ids:[], co_benefits_of_intervention_ids:[], nature_based_solution_ids:[], hazard_type_ids:[]
+  permit_params :name, :organization_list, :donor_list, :tag_list, :project_uid, :status, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :start_year, :completion_year, :implementation_status, :intervention_type, :summary, :learn_more, :references, :benefit_details, :location_codes, organization_ids:[], donor_ids:[], primary_benefits_of_intervention_ids:[], co_benefits_of_intervention_ids:[], nature_based_solution_ids:[], hazard_type_ids:[]
   index do
     selectable_column
     column :id
@@ -81,7 +90,21 @@ ActiveAdmin.register Project do
     f.inputs do
       f.input :name, as: :string
       f.input :project_uid
-      f.input :organization_list, as: :tags, multiple: :true, collection: ActsAsTaggableOn::Tagging.includes(:tag).where(context: 'organizations').map{ |tagging| tagging.tag.name }.uniq
+      f.input :organization_list, as: :tags, multiple: :true, collection: ActsAsTaggableOn::Tagging.includes(:tag).where(context: 'organizations').map{ |tagging| tagging.tag.name }.uniq,
+                input_html: {
+                  value: f.object.organization_list.join(','),
+                  data: { select_options: { tokenSeparators: [','] } }
+                }
+      f.input :donor_list, as: :tags, multiple: :true, collection: ActsAsTaggableOn::Tagging.includes(:tag).where(context: 'donors').map{ |tagging| tagging.tag.name }.uniq,
+                input_html: {
+                  value: f.object.donor_list.join(','),
+                  data: { select_options: { tokenSeparators: [','] } }
+                }
+      f.input :tag_list, as: :tags, multiple: :true, collection: ActsAsTaggableOn::Tagging.includes(:tag).where(context: 'tags').map{ |tagging| tagging.tag.name }.uniq,
+                input_html: {
+                  value: f.object.tag_list.join(','),
+                  data: { select_options: { tokenSeparators: [','] } }
+                }
       f.input :status, as: :select, collection: %w{under_revision published unpublished}
       f.input :location_codes, input_html: { value: object.current_location_codes }
       f.input :scale, as: :select, collection: Project::SCALES
