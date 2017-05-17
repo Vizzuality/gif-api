@@ -35,7 +35,7 @@ class Project < ApplicationRecord
       [:name, :project_uid]
     ]
   end
-  IMPLEMENTATION_STATUSES = %w{ongoing completed}
+  IMPLEMENTATION_STATUSES = ["ongoing", "completed", "planning stage"]
   INTERVENTION_TYPES = %w{hybrid green}
   SCALES = %w{local regional national international}
   enum status: [:under_revision, :published, :unpublished]
@@ -71,6 +71,7 @@ class Project < ApplicationRecord
   scope :by_status,                 -> status                 { where(implementation_status: status) }
   scope :by_primary_benefits,       -> primary_benefits       { where(primary_benefits_of_interventions: { id: primary_benefits } ) }
   scope :by_countries,              -> countries              { where(locations: { iso: countries } ) }
+  scope :country_eq,                -> country                { joins(:locations).where(locations: { adm0_name: country }).distinct }
   scope :by_regions,                -> regions                { where(locations: { region: regions } ) }
   scope :by_intervention_types,     -> intervention_types     { where(intervention_type:  intervention_types) }
   scope :by_nature_based_solutions, -> nature_based_solutions { where( nature_based_solutions: { id: nature_based_solutions } ) }
@@ -105,7 +106,7 @@ class Project < ApplicationRecord
   end
 
   def self.ransackable_scopes(auth=nil)
-    %i(organization_tags_eq donor_tags_eq tag_list)
+    %i(organization_tags_eq donor_tags_eq tag_list country_eq)
   end
 
   def self.find_by_lug_or_id(param)

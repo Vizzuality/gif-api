@@ -7,7 +7,7 @@ if CoBenefitsOfIntervention.all.size == 0
   puts "co-benefits created"
 end
 if PrimaryBenefitsOfIntervention.all.size == 0
-  bf = ["coastal energy management", "shoreline stabilization & accretion", "wind speed reduction", "redirection & drainage of flood & storm water", "storage & infiltration of flood & storm water", "reduced infrastructure loss", "slope stabilization", "soil composition maintained", "groundwater recharge & water table stabilization", "saline intrusion reduced", "other"]
+  bf = ["storage & infiltration of flood & storm water ", "coastal energy management", "shoreline stabilization & accretion", "wind speed reduction", "redirection & drainage of flood & storm water", "storage & infiltration of flood & storm water", "reduced infrastructure loss", "slope stabilization", "soil composition maintained", "groundwater recharge & water table stabilization", "saline intrusion reduced", "other"]
   bf.each do |b|
     PrimaryBenefitsOfIntervention.create!(name: b)
   end

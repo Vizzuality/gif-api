@@ -44,6 +44,9 @@ ActiveAdmin.register Project do
 
   filter :project_uid
   filter :name
+  filter :country,
+    as: :select,
+    collection: ->{ Location.joins(:projects).map{ |l| l.adm0_name }.uniq.sort_by(&:downcase) }
   filter :organization_tags,
     as: :select,
     collection: ->{ ActsAsTaggableOn::Tagging.includes(:tag).where(context: 'organizations').map{ |tagging| tagging.tag.name }.uniq.sort_by(&:downcase) }
