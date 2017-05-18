@@ -133,6 +133,9 @@ GEM
       activesupport (>= 3.2.0)
       json (>= 1.7)
       mime-types (>= 1.16)
+    cartowrap (0.1.1)
+      faraday
+      multi_json
     case_transform (0.2)
       activesupport
     coderay (1.1.1)
@@ -165,6 +168,8 @@ GEM
       railties (>= 3.0.0)
     faker (1.7.3)
       i18n (~> 0.5)
+    faraday (0.12.1)
+      multipart-post (>= 1.2, < 3)
     ffi (1.9.18)
     formtastic (3.1.5)
       actionpack (>= 3.2.13)
@@ -204,6 +209,7 @@ GEM
     mini_portile2 (2.1.0)
     minitest (5.10.1)
     multi_json (1.12.1)
+    multipart-post (2.0.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
@@ -345,6 +351,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rvm
   carrierwave (= 0.10.0)
+  cartowrap
   coffee-rails (~> 4.2)
   database_cleaner (= 1.5.3)
   devise (= 4.2.0)

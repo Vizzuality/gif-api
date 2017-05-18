@@ -41,6 +41,7 @@ class Project < ApplicationRecord
   enum status: [:under_revision, :published, :unpublished]
   has_many :organizations_projects,dependent: :nullify
   attr_accessor :location_codes
+  attr_accessor :location_coordinates
   has_many :organizations, through: :organizations_projects, dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
   has_many :donors_projects,dependent: :nullify
   has_many :donors, through: :donors_projects,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
@@ -48,7 +49,8 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :co_benefits_of_interventions,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
   has_and_belongs_to_many :nature_based_solutions,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
   has_and_belongs_to_many :hazard_types,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
-  has_and_belongs_to_many :locations,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
+  has_many :locations_projects, dependent: :nullify
+  has_many :locations, through: :locations_projects, dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
   validates :name, presence: true, uniqueness: true
   validates_inclusion_of :implementation_status, in: IMPLEMENTATION_STATUSES, allow_nil: true
   validates_inclusion_of :scale, in: SCALES, allow_nil: true
@@ -57,7 +59,7 @@ class Project < ApplicationRecord
   validates :completion_year, numericality: true, allow_nil: true
   validate :years_timeline
 
-  before_validation :set_locations!, if: Proc.new { |project| project.location_codes.present? }
+  before_validation :set_locations!, if: Proc.new { |project| project.location_codes.present? || project.location_coordinates.present?}
 
   scope :publihsed,                 ->                        { where(status: :published) }
   scope :by_name,                   -> name                   { where('projects.name ilike ?', "%%#{name}%%") }
@@ -193,23 +195,72 @@ class Project < ApplicationRecord
   end
 
   def set_locations!
-    candidates = self.location_codes
-    if candidates.present?
+    new_locations_projects = []
+    if self.location_codes.present?
+      candidates = self.location_codes
       ary = candidates.to_s.split('|').reject { |i| i.empty? }
-      new_locations = []
       ary.each do |code|
         adm_levels = code.split('.')
         level = adm_levels.size - 1
         location = Location.where("adm#{level}_code": adm_levels[level])
-        location = location.first
+        location = location.first if location.any?
         if location.present?
-          new_locations << location
+          if location.centroid.present?
+            coordinates = JSON.parse(location.centroid)["coordinates"]
+          else
+            coordinates = [nil, nil]
+          end
+          new_locations_project = LocationsProject.new(location: location, latitude: coordinates[1], longitude: coordinates[0])
+          new_locations_projects << new_locations_project
         else
           errors.add(:project_location_codes, "there is no location with code #{code} and admin level #{level}")
         end
       end
-      self.locations = new_locations
+    end
+    if self.location_coordinates.present?
+      candidates = self.location_coordinates
+      if candidates.is_a?(Array) && candidates.any?
+        candidates.each do |candidate|
+          begin
+            lat = candidate[:lat]
+            long = candidate[:lng]
+          rescue
+            nil
+          end
+          location = Project.get_location_by_coordinates(lat, long) if lat.present? && long.present?
+          if location.present?
+            if location.centroid.present?
+              coordinates = JSON.parse(location.centroid)["coordinates"]
+            else
+              coordinates = [nil, nil]
+            end
+            new_locations_project = LocationsProject.new(location: location, latitude: lat.to_, longitude: long.to_)
+            new_locations_projects << new_locations_project
+          else
+            errors.add(:project_location_codes, "there is no location with latitude #{lat} and longitude #{long}")
+          end
+        end
+      end
+    end
+    if new_locations_projects.any?
+      self.locations_projects = new_locations_projects
     else
+      nil
+    end
+  end
+
+  def self.get_location_by_coordinates(lat, long)
+    require 'cartowrap'
+    api = Cartowrap::API.new(nil, "simbiotica")
+    query = "SELECT * from gaul_final where st_intersects(the_geom, ST_SetSRID(ST_MakePoint(#{long}, #{lat}),4326)) order by level desc limit 1"
+    api.send_query(query)
+    begin
+      response = JSON.parse(api.response)["rows"][0]
+      level = response["level"]
+      code = response["adm#{level}_code"]
+      location = Location.find_by_sql("where level=#{level} AND adm#{level}_code=code")
+      location
+    rescue
       nil
     end
   end

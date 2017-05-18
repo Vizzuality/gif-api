@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170510093027) do
+ActiveRecord::Schema.define(version: 20170518095617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,6 +102,8 @@ ActiveRecord::Schema.define(version: 20170510093027) do
   create_table "locations_projects", force: :cascade do |t|
     t.integer "location_id"
     t.integer "project_id"
+    t.float   "latitude"
+    t.float   "longitude"
     t.index ["location_id"], name: "index_locations_projects_on_location_id", using: :btree
     t.index ["project_id"], name: "index_locations_projects_on_project_id", using: :btree
   end

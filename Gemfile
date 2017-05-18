@@ -33,6 +33,7 @@ gem 'friendly_id', '~> 5.1.0'
 gem 'jwt'
 gem 'simple_command'
 gem 'acts-as-taggable-on', '~> 4.0'
+gem 'cartowrap'
 
 group :development, :test do
   gem 'byebug', platform: :mri
