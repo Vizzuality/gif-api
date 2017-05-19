@@ -232,11 +232,12 @@ RSpec.describe Project, type: :model do
     end
     it "can decode and accept location codes and coordinates" do
       location_to_code = create(:location, adm0_code: "142", adm0_name: "Lesotho", adm1_code: "1811", adm1_name: "Quthing", adm2_code: "19026", adm2_name: "Name Unknown", iso: "LSO", level: 2, region: "Sub-Saharan Africa")
-      location_by_coordinates = create(:location, adm0_code: "252", adm0_name: "Tuvalu", adm1_code: "3103", adm1_name: "Administrative unit not available", adm2_code: "28380", adm2_name: "Administrative unit not available", iso: "TUV", level: 2, region: "East Asia & Pacific")
+      location_by_coordinates = create(:location, adm0_code: "252", adm0_name: "Tuvalu", adm1_code: "3103", adm1_name: "Administrative unit not available", adm2_code: "25820", adm2_name: "Administrative unit not available", iso: "TUV", level: 2, region: "East Asia & Pacific")
       @project.location_codes = '142.1811.19026'
       @project.location_coordinates = [{"lng": -3.71701361553567, "lat": 40.4950695326567}]
       @project.save!
-      expect(@project.locations).to include([location_to_code, location_by_coordinates])
+      expect(@project.locations).to include(location_to_code)
+      expect(@project.locations).to include(location_by_coordinates)
     end
   end
 end

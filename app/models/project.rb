@@ -234,7 +234,7 @@ class Project < ApplicationRecord
             else
               coordinates = [nil, nil]
             end
-            new_locations_project = LocationsProject.new(location: location, latitude: lat.to_, longitude: long.to_)
+            new_locations_project = LocationsProject.new(location: location, latitude: lat, longitude: long)
             new_locations_projects << new_locations_project
           else
             errors.add(:project_location_codes, "there is no location with latitude #{lat} and longitude #{long}")
@@ -258,7 +258,7 @@ class Project < ApplicationRecord
       response = JSON.parse(api.response)["rows"][0]
       level = response["level"]
       code = response["adm#{level}_code"]
-      location = Location.find_by_sql("where level=#{level} AND adm#{level}_code=code")
+      location = Location.where("level=#{level} AND adm#{level}_code='#{code}'").first
       location
     rescue
       nil
