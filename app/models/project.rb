@@ -2,25 +2,32 @@
 #
 # Table name: projects
 #
-#  id                          :integer          not null, primary key
-#  project_uid                 :integer
-#  status                      :integer
-#  name                        :text
-#  scale                       :string
-#  estimated_cost              :float
-#  estimated_monetary_benefits :float
-#  original_currency           :string
-#  summary                     :text
-#  start_year                  :integer
-#  completion_year             :integer
-#  implementation_status       :string
-#  intervention_type           :string
-#  learn_more                  :text
-#  references                  :text
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
-#  benefit_details             :text
-#  slug                        :string
+#  id                                     :integer          not null, primary key
+#  project_uid                            :integer
+#  status                                 :integer
+#  name                                   :text
+#  scale                                  :string
+#  estimated_cost                         :float
+#  estimated_monetary_benefits            :float
+#  original_currency                      :string
+#  summary                                :text
+#  start_year                             :integer
+#  completion_year                        :integer
+#  implementation_status                  :string
+#  intervention_type                      :string
+#  learn_more                             :text
+#  references                             :text
+#  created_at                             :datetime         not null
+#  updated_at                             :datetime         not null
+#  benefit_details                        :text
+#  slug                                   :string
+#  contributor_name                       :string
+#  contributor_organization               :string
+#  contact_info                           :text
+#  other_nature_based_solution            :string
+#  other_primary_benefits_of_intervention :string
+#  other_co_benefits_of_intervention      :string
+#  user_id                                :integer
 #
 
 class Project < ApplicationRecord
@@ -49,6 +56,7 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :co_benefits_of_interventions,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
   has_and_belongs_to_many :nature_based_solutions,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
   has_and_belongs_to_many :hazard_types,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
+  belongs_to :user, optional: true
   has_many :locations_projects, dependent: :nullify
   has_many :locations, through: :locations_projects, dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
   validates :name, presence: true, uniqueness: true

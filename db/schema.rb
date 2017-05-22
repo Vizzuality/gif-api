@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518095617) do
+ActiveRecord::Schema.define(version: 20170522081650) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -162,11 +162,19 @@ ActiveRecord::Schema.define(version: 20170518095617) do
     t.string   "intervention_type"
     t.text     "learn_more"
     t.text     "references"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
     t.text     "benefit_details"
     t.string   "slug"
+    t.string   "contributor_name"
+    t.string   "contributor_organization"
+    t.text     "contact_info"
+    t.string   "other_nature_based_solution"
+    t.string   "other_primary_benefits_of_intervention"
+    t.string   "other_co_benefits_of_intervention"
+    t.integer  "user_id"
     t.index ["slug"], name: "index_projects_on_slug", unique: true, using: :btree
+    t.index ["user_id"], name: "index_projects_on_user_id", using: :btree
   end
 
   create_table "taggings", force: :cascade do |t|
