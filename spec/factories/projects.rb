@@ -28,6 +28,9 @@
 #  other_primary_benefits_of_intervention :string
 #  other_co_benefits_of_intervention      :string
 #  user_id                                :integer
+#  benefits_currency                      :string
+#  costs_usd                              :float
+#  benefits_usd                           :float
 #
 
 FactoryGirl.define do

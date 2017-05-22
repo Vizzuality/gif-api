@@ -8,6 +8,7 @@ module FilterCollection
     hazard_types = HazardType.all.select(:id, :name).order('name ASC')
     intervention_types = Project::INTERVENTION_TYPES.sort_by{ |m| m.downcase }
     nature_based_solutions = NatureBasedSolution.all.select(:id, :name).order('name ASC')
+    currencies = Currency.all.select(:id, :iso, :name).order('name ASC')
     primary_benefits = PrimaryBenefitsOfIntervention.all.select(:id, :name).order('name ASC')
     co_benefits = CoBenefitsOfIntervention.all.select(:id, :name).order('name ASC')
     implementation_statuses = Project::IMPLEMENTATION_STATUSES.sort_by{ |m| m.downcase }
@@ -27,6 +28,7 @@ module FilterCollection
     filters[:implementation_statuses] = implementation_statuses
     filters[:cost_min] = cost_min
     filters[:cost_max] = cost_max
+    filters[:currencies] = currencies
     filters
   end
 end
