@@ -22,7 +22,6 @@ gem 'inherited_resources', github: 'activeadmin/inherited_resources'
 gem 'active_model_serializers', '0.10.5'
 gem 'active_admin_theme', '1.0.2'
 gem 'activeadmin_addons'
-gem 'carrierwave', '0.10.0'
 gem 'mini_magick', '4.3.6'
 gem 'awesome_print', '1.6.1'
 gem 'dotenv-rails', '2.0.1'
@@ -33,6 +32,7 @@ gem 'jwt'
 gem 'simple_command'
 gem 'acts-as-taggable-on', '~> 4.0'
 gem 'cartowrap'
+gem "paperclip", "~> 5.0.0"
 
 group :development, :test do
   gem 'byebug', platform: :mri

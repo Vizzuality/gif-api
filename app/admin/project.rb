@@ -73,7 +73,7 @@ ActiveAdmin.register Project do
   filter :completion_year
   filter :created_at
 
-  permit_params :name, :organization_list, :donor_list, :tag_list, :project_uid, :status, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :start_year, :completion_year, :implementation_status, :intervention_type, :summary, :learn_more, :references, :benefit_details, :location_codes, :other_nature_based_solution, :other_primary_benefits_of_intervention, :other_co_benefits_of_intervention, organization_ids:[], donor_ids:[], primary_benefits_of_intervention_ids:[], co_benefits_of_intervention_ids:[], nature_based_solution_ids:[], hazard_type_ids:[]
+  permit_params :name, :organization_list, :donor_list, :tag_list, :project_uid, :status, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :start_year, :completion_year, :implementation_status, :intervention_type, :summary, :learn_more, :references, :benefit_details, :location_codes, :other_nature_based_solution, :other_primary_benefits_of_intervention, :other_co_benefits_of_intervention, :picture, organization_ids:[], donor_ids:[], primary_benefits_of_intervention_ids:[], co_benefits_of_intervention_ids:[], nature_based_solution_ids:[], hazard_type_ids:[]
   index do
     selectable_column
     column :id
@@ -131,6 +131,12 @@ ActiveAdmin.register Project do
       f.input :other_nature_based_solution
       f.input :other_primary_benefits_of_intervention
       f.input :other_co_benefits_of_intervention
+      f.input :picture, as: :file, hint: image_tag(f.object.picture.url(:thumb))
+      if f.object.picture.present?
++       f.inputs :picture_attributes do |picture_fields|
++         picture_fields.input :_destroy, as: :boolean, label: 'Delete?'
++       end
++     end
     end
     f.actions
   end

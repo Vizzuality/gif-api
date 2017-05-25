@@ -31,6 +31,10 @@
 #  benefits_currency                      :string
 #  costs_usd                              :float
 #  benefits_usd                           :float
+#  picture_file_name                      :string
+#  picture_content_type                   :string
+#  picture_file_size                      :integer
+#  picture_updated_at                     :datetime
 #
 
 class Project < ApplicationRecord
@@ -45,13 +49,15 @@ class Project < ApplicationRecord
       [:name, :project_uid]
     ]
   end
+   has_attached_file :picture, styles: { medium: "300x300>", thumb: "100x100>" }, default_url: "/uploads/images/:style/missing.png"
+  validates_attachment_content_type :picture, content_type: /\Aimage\/.*\z/
+  attr_accessor :location_codes
+  attr_accessor :location_coordinates
   IMPLEMENTATION_STATUSES = ["ongoing", "completed", "planning stage"]
   INTERVENTION_TYPES = %w{hybrid green}
   SCALES = %w{local regional national international}
   enum status: [:under_revision, :published, :unpublished]
   has_many :organizations_projects,dependent: :nullify
-  attr_accessor :location_codes
-  attr_accessor :location_coordinates
   has_many :organizations, through: :organizations_projects, dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
   has_many :donors_projects,dependent: :nullify
   has_many :donors, through: :donors_projects,dependent: :nullify, after_add: :touch_updated_at, after_remove: :touch_updated_at
@@ -275,6 +281,10 @@ class Project < ApplicationRecord
       nil
     end
   end
+
+  def picture_attributes=(attributes)
++   picture.clear if has_destroy_flag?(attributes) && !picture.dirty?
++ end
 
   private
     def years_timeline
