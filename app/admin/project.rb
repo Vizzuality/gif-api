@@ -109,7 +109,7 @@ ActiveAdmin.register Project do
                   data: { select_options: { tokenSeparators: [','] } }
                 }
       f.input :status, as: :select, collection: %w{under_revision published unpublished}
-      f.input :location_codes, input_html: { value: object.current_location_codes }
+      #f.input :location_codes, input_html: { value: object.current_location_codes }
       f.input :scale, as: :select, collection: Project::SCALES
       f.input :donors
       f.input :primary_benefits_of_interventions
