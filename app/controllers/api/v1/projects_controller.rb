@@ -24,7 +24,13 @@ module Api::V1
       @project = Project.find_by_lug_or_id(params[:id])
     end
     def create
-      render json: 'OK'
+      project = ProjectFromApi.new(params[:project])
+      project.create_or_update
+      if project.errors.any?
+        render json: project.errors, status: project.status
+      else
+        render json: project
+      end
     end
     def update
     end

@@ -111,7 +111,7 @@ class ProjectImporter
     end
   end
 
-    def find_some_by_name(candidates=nil, model)
+  def find_some_by_name(candidates=nil, model)
     if candidates.present?
       ary = candidates.split('|').reject { |i| i.empty? }
       some = []
