@@ -52,7 +52,6 @@ class Project < ApplicationRecord
   has_attached_file :picture, styles: { thumb: "100x100>" }, default_url: "/uploads/images/:style/missing.png",
     path: "#{Rails.root}/public/system/pictures/:id/:style/:basename.:extension",
     url: "/system/pictures/:id/:style/:basename.:extension"
-  validates_attachment_content_type :picture, content_type: /\Aimage\/.*\z/
   attr_accessor :location_codes
   attr_accessor :location_coordinates
   IMPLEMENTATION_STATUSES = ["ongoing", "completed", "planning stage"]
@@ -76,10 +75,14 @@ class Project < ApplicationRecord
   validates_inclusion_of :intervention_type, in: INTERVENTION_TYPES, allow_nil: true
   validates :start_year, numericality: true, allow_nil: true
   validates :completion_year, numericality: true, allow_nil: true
-  validate :years_timeline
+  validates_attachment_content_type :picture, content_type: /\Aimage\/.*\z/
+  validate :years_timeline_validation
+  validate :costs_currency_validaton
+  validate :benefits_currency_validaton
 
   before_validation :set_locations!, if: Proc.new { |project| project.location_codes.present? || project.location_coordinates.present?}
   before_validation { self.picture.clear if self.remove_picture == '1' }
+  before_validation :convert_currencies
 
   scope :publihsed,                 ->                        { where(status: :published) }
   scope :by_name,                   -> name                   { where('projects.name ilike ?', "%%#{name}%%") }
@@ -205,6 +208,25 @@ class Project < ApplicationRecord
     @remove_picture || false
   end
 
+  def convert_currencies
+    if self.original_currency.present? && self.estimated_cost.present? && self.original_currency != "USD"
+      if self.estimated_cost_changed? || self.original_currency_changed? || self.new_record?
+        amount = CurrencyConverter.convert(self.estimated_cost, self.original_currency, self.start_year)
+        self.costs_usd = amount
+      end
+    elsif  self.original_currency.present? && self.estimated_cost.present? && self.original_currency == "USD"
+       self.costs_usd = self.original_currency
+    end
+    if self.benefits_currency.present? && self.estimated_monetary_benefits.present? && self.benefits_currency != "USD"
+      if self.estimated_monetary_benefits_changed? || self.benefits_currency_changed? || self.new_record?
+        amount = CurrencyConverter.convert(self.estimated_monetary_benefits, self.benefits_currency, self.start_year)
+        self.benefits_usd = amount
+      end
+    elsif self.benefits_currency.present? && self.estimated_monetary_benefits.present? && self.benefits_currency == "USD"
+      self.benefits_usd = estimated_monetary_benefits
+    end
+  end
+
   def current_location_codes
     location_codes = []
     self.locations.each do |l|
@@ -292,9 +314,22 @@ class Project < ApplicationRecord
   end
 
   private
-    def years_timeline
+    def years_timeline_validation
       if start_year.present? && completion_year.present? && completion_year < start_year
         errors.add(:completion_year, "can't be previous to Start year")
+      end
+    end
+    def costs_currency_validaton
+      if self.original_currency.present?
+        currency = Currency.find_by(iso: self.original_currency)
+        errors.add(:original_currency, "not a valid currency") unless currency.present?
+      end
+    end
+
+    def benefits_currency_validaton
+      if self.benefits_currency.present?
+        currency = Currency.find_by(iso: self.benefits_currency)
+        errors.add(:benefits_currency, "not a valid currency") unless currency.present?
       end
     end
 

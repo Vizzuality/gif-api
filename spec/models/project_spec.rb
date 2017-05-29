@@ -40,6 +40,10 @@
 require 'rails_helper'
 
 RSpec.describe Project, type: :model do
+  before(:context) do
+    Currency.create(name: 'dolar', iso: 'USD')
+    Currency.create(name: 'pound', iso: 'GBP')
+  end
   context "Project validation" do
     it "Should be invalid without a name" do
       project = build(:project, name: nil)
@@ -207,7 +211,7 @@ RSpec.describe Project, type: :model do
   end
   context "instance methods" do
     before :each do
-      @project = create(:project, name: 'aaaaa real project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'ongoing', intervention_type: 'hybrid', status: 'published', summary: 'This is The Thing')
+      @project = create(:project, name: 'aaaaa real project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'ongoing', intervention_type: 'hybrid', status: 'published', summary: 'This is The Thing', original_currency: 'GBP')
       @cbf = create(:co_benefits_of_intervention)
       @pbf = create(:primary_benefits_of_intervention)
       @nbs = create(:nature_based_solution)
@@ -252,6 +256,9 @@ RSpec.describe Project, type: :model do
       @project.save!
       expect(@project.locations).to include(location_to_code)
       expect(@project.locations).to include(location_by_coordinates)
+    end
+    it 'converts currencies' do
+      expect(@project.costs_usd).to be_a(Float)
     end
   end
 end
