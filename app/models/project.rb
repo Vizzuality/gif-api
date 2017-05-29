@@ -49,7 +49,9 @@ class Project < ApplicationRecord
       [:name, :project_uid]
     ]
   end
-   has_attached_file :picture, styles: { medium: "300x300>", thumb: "100x100>" }, default_url: "/uploads/images/:style/missing.png"
+  has_attached_file :picture, styles: { thumb: "100x100>" }, default_url: "/uploads/images/:style/missing.png",
+    path: "#{Rails.root}/public/system/pictures/:id/:style/:basename.:extension",
+    url: "/system/pictures/:id/:style/:basename.:extension"
   validates_attachment_content_type :picture, content_type: /\Aimage\/.*\z/
   attr_accessor :location_codes
   attr_accessor :location_coordinates
@@ -77,6 +79,7 @@ class Project < ApplicationRecord
   validate :years_timeline
 
   before_validation :set_locations!, if: Proc.new { |project| project.location_codes.present? || project.location_coordinates.present?}
+  before_validation { self.picture.clear if self.remove_picture == '1' }
 
   scope :publihsed,                 ->                        { where(status: :published) }
   scope :by_name,                   -> name                   { where('projects.name ilike ?', "%%#{name}%%") }
@@ -196,6 +199,12 @@ class Project < ApplicationRecord
     related
   end
 
+  attr_writer :remove_picture
+
+  def remove_picture
+    @remove_picture || false
+  end
+
   def current_location_codes
     location_codes = []
     self.locations.each do |l|
@@ -281,10 +290,6 @@ class Project < ApplicationRecord
       nil
     end
   end
-
-  def picture_attributes=(attributes)
-+   picture.clear if has_destroy_flag?(attributes) && !picture.dirty?
-+ end
 
   private
     def years_timeline
