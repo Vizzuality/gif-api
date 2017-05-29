@@ -40,6 +40,7 @@
 class Project < ApplicationRecord
   require 'csv'
   extend FriendlyId
+  include ActiveModel::Dirty
   friendly_id :name, use: :slugged
   acts_as_taggable
   acts_as_taggable_on :organizations, :donors, :tags
@@ -100,8 +101,8 @@ class Project < ApplicationRecord
   scope :by_regions,                -> regions                { where(locations: { region: regions } ) }
   scope :by_intervention_types,     -> intervention_types     { where(intervention_type:  intervention_types) }
   scope :by_nature_based_solutions, -> nature_based_solutions { where( nature_based_solutions: { id: nature_based_solutions } ) }
-  scope :from_cost,                 -> starting_cost          { where('projects.estimated_cost >= ?', starting_cost) }
-  scope :to_cost,                   -> ending_cost            { where('projects.estimated_cost <= ?', ending_cost) }
+  scope :from_cost,                 -> starting_cost          { where('projects.costs_usd >= ?', starting_cost) }
+  scope :to_cost,                   -> ending_cost            { where('projects.costs_usd <= ?', ending_cost) }
   scope :organization_tags_eq,      -> tags                   { tagged_with(tags, on: :organizations, any: true) }
   scope :donor_tags_eq,             -> tags                   { tagged_with(tags, on: :donors, any: true) }
   scope :tag_list,                  -> tags                   { tagged_with(tags, on: :tags, any: true) }
@@ -215,7 +216,7 @@ class Project < ApplicationRecord
         self.costs_usd = amount
       end
     elsif  self.original_currency.present? && self.estimated_cost.present? && self.original_currency == "USD"
-       self.costs_usd = self.original_currency
+       self.costs_usd = self.estimated_cost
     end
     if self.benefits_currency.present? && self.estimated_monetary_benefits.present? && self.benefits_currency != "USD"
       if self.estimated_monetary_benefits_changed? || self.benefits_currency_changed? || self.new_record?

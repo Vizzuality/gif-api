@@ -12,8 +12,8 @@ module FilterCollection
     primary_benefits = PrimaryBenefitsOfIntervention.all.select(:id, :name).order('name ASC')
     co_benefits = CoBenefitsOfIntervention.all.select(:id, :name).order('name ASC')
     implementation_statuses = Project::IMPLEMENTATION_STATUSES.sort_by{ |m| m.downcase }
-    cost_min = Project.where.not(estimated_cost: nil).order('estimated_cost ASC').limit(1).pluck(:estimated_cost).join.to_f
-    cost_max = Project.where.not(estimated_cost: nil).order('estimated_cost DESC').limit(1).pluck(:estimated_cost).join.to_f
+    cost_min = Project.where.not(costs_usd: nil).order('costs_usd ASC').limit(1).pluck(:costs_usd).join.to_f
+    cost_max = Project.where.not(costs_usd: nil).order('costs_usd DESC').limit(1).pluck(:costs_usd).join.to_f
     filters = {}
     filters[:scales] = scales
     filters[:regions] = regions
