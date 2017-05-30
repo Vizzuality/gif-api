@@ -83,7 +83,7 @@ class Project < ApplicationRecord
 
   before_validation :set_locations!, if: Proc.new { |project| project.location_codes.present? || project.location_coordinates.present?}
   before_validation { self.picture.clear if self.remove_picture == '1' }
-  before_validation :convert_currencies
+  before_save :convert_currencies
 
   scope :publihsed,                 ->                        { where(status: :published) }
   scope :by_name,                   -> name                   { where('projects.name ilike ?', "%%#{name}%%") }
@@ -210,21 +210,24 @@ class Project < ApplicationRecord
   end
 
   def convert_currencies
-    if self.original_currency.present? && self.estimated_cost.present? && self.original_currency != "USD"
-      if self.estimated_cost_changed? || self.original_currency_changed? || self.new_record?
-        amount = CurrencyConverter.convert(self.estimated_cost, self.original_currency, self.start_year)
-        self.costs_usd = amount
+    year = self.start_year.present? ? self.start_year : Time.now.year
+    c_currency = self.original_currency.present? ? self.original_currency : "USD"
+    b_currency = self.benefits_currency.present? ? self.benefits_currency : "USD"
+    if self.estimated_cost.present? && (self.estimated_cost_changed? || self.original_currency_changed? || self.new_record?)
+      if c_currency == "USD"
+        amount_c = self.estimated_cost
+      else
+        amount_c = CurrencyConverter.convert(self.estimated_cost, c_currency, year)
       end
-    elsif  self.original_currency.present? && self.estimated_cost.present? && self.original_currency == "USD"
-       self.costs_usd = self.estimated_cost
+      self.costs_usd = amount_c
     end
-    if self.benefits_currency.present? && self.estimated_monetary_benefits.present? && self.benefits_currency != "USD"
-      if self.estimated_monetary_benefits_changed? || self.benefits_currency_changed? || self.new_record?
-        amount = CurrencyConverter.convert(self.estimated_monetary_benefits, self.benefits_currency, self.start_year)
-        self.benefits_usd = amount
+    if self.estimated_monetary_benefits.present? && (self.estimated_monetary_benefits_changed? || self.original_currency_changed? || self.new_record?)
+      if b_currency == "USD"
+        amount_b = self.estimated_monetary_benefits
+      else
+        amount_b = CurrencyConverter.convert(self.estimated_monetary_benefits, b_currency, year)
       end
-    elsif self.benefits_currency.present? && self.estimated_monetary_benefits.present? && self.benefits_currency == "USD"
-      self.benefits_usd = estimated_monetary_benefits
+      self.benefits_usd = amount_b
     end
   end
 

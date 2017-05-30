@@ -95,7 +95,7 @@ RSpec.describe Project, type: :model do
   end
   context "scopes" do
     before :each do
-      @project = create(:project, name: 'aaaaa real project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'ongoing', intervention_type: 'hybrid', status: 'published', summary: 'This is The Thing')
+      @project = create(:project, name: 'aaaaa real project', scale: 'regional', estimated_cost: 1000, start_year: 2000, completion_year: 2020, implementation_status: 'ongoing', intervention_type: 'hybrid', status: 'published', summary: 'This is The Thing', original_currency: 'USD')
       @cbf = create(:co_benefits_of_intervention)
       @pbf = create(:primary_benefits_of_intervention)
       @nbs = create(:nature_based_solution)
