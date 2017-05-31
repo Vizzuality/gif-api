@@ -294,7 +294,7 @@ class Project < ApplicationRecord
         end
       end
     end
-    if new_locations_projects.any?
+    if new_locations_projects.any? && self.errors.messages.blank?
       self.locations_projects = new_locations_projects
     else
       nil

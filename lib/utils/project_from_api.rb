@@ -53,40 +53,45 @@ class ProjectFromApi
   def initialize(data)
     @data = data
     @errors = []
-    @project
+    @project ||= Project.new
+    @relation_errors = ActiveModel::Errors.new(@project)
   end
 
   attr_reader :errors, :data, :project, :status
 
   def create_or_update
-    project = self.instantiate(data[:id])
-    project.name = data[:name]
-    project.estimated_monetary_benefits = data[:estimated_monetary_benefits]
-    project.estimated_cost = data[:estimated_cost]
-    project.original_currency = data[:currency_estimated_cost]
-    project.benefits_currency = data[:currency_monetary_benefits]
-    project.summary = data[:summary]
-    project.start_year = data[:start_year]
-    project.completion_year = data[:completion_year]
-    project.implementation_status = data[:implementation_status]
-    project.intervention_type = data[:intervention_type]
-    project.learn_more = data[:learn_more]
-    project.references = data[:references]
-    project.benefit_details = data[:benefit_details]
-    project.contributor_name = data[:contributor_name]
-    project.contributor_organization = data[:contributor_organization]
-    project.contact_info = data[:contact_info]
-    if project.valid?
-      project.save
+    @project = self.instantiate(data[:id])
+    @project.name = data[:name]
+    @project.estimated_monetary_benefits = data[:estimated_monetary_benefits]
+    @project.estimated_cost = data[:estimated_cost]
+    @project.original_currency = data[:currency_estimated_cost]
+    @project.benefits_currency = data[:currency_monetary_benefits]
+    @project.summary = data[:summary]
+    @project.start_year = data[:start_year]
+    @project.completion_year = data[:completion_year]
+    @project.implementation_status = data[:implementation_status]
+    @project.intervention_type = data[:intervention_type]
+    @project.learn_more = data[:learn_more]
+    @project.references = data[:references]
+    @project.benefit_details = data[:benefit_details]
+    @project.contributor_name = data[:contributor_name]
+    @project.contributor_organization = data[:contributor_organization]
+    @project.contact_info = data[:contact_info]
+    @project.location_coordinates = data[:locations]
+    @project.other_nature_based_solution = data[:new_nature_based_solutions]
+    @project.other_primary_benefits_of_intervention = data[:new_primary_benefits_of_interventions]
+    @project.other_co_benefits_of_intervention = data[:new_co_benefits_of_interventions]
+    @project.organizations = self.get_entities(data[:organizations], Organization)
+    @project.donors = self.get_entities(data[:donors], Donor)
+    @project.primary_benefits_of_interventions = self.get_entities(data[:primary_benefits_of_interventions], PrimaryBenefitsOfIntervention)
+    @project.co_benefits_of_interventions = self.get_entities(data[:co_benefits_of_interventions], CoBenefitsOfIntervention)
+    @project.nature_based_solutions = self.get_entities(data[:nature_based_solutions], NatureBasedSolution)
+    @project.hazard_types = self.get_entities(data[:hazard_types], HazardType)
+    if @relation_errors.messages.blank? && @project.valid?
+      @project.save!
       @status = 200
     else
-      project.errors.full_messages.each do |error|
-        @errors << {
-          "status": "400",
-          "title": "error",
-          "detatil": error
-        }
-      end
+      self.parse_errors
       @status = 400
     end
   end
@@ -109,6 +114,33 @@ class ProjectFromApi
       project = Project.new
     end
     project
+  end
+
+  def get_entities(collection = nil, model)
+    collection = [] if collection.nil?
+    entities = model.where(id: collection)
+    if entities.size != collection.size
+      wrong_ids = []
+      collection.each do |id|
+        wrong_ids << id if model.where(id: id).size == 0
+      end
+      @relation_errors.add("#{model.to_s.underscore}".to_sym, "not found with id(s) #{wrong_ids.join(",")}")
+      entities = []
+    end
+    entities
+  end
+
+  def parse_errors
+    previous_messages = @relation_errors.full_messages
+    @project.valid?
+    messages = previous_messages + @project.errors.full_messages
+    messages.each do |error|
+      @errors << {
+        "status": "400",
+        "title": "error",
+        "detatil": error
+      }
+    end
   end
 
 end
