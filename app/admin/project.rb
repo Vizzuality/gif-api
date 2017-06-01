@@ -73,7 +73,7 @@ ActiveAdmin.register Project do
   filter :completion_year
   filter :created_at
 
-  permit_params :name, :organization_list, :donor_list, :tag_list, :project_uid, :status, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :start_year, :completion_year, :implementation_status, :intervention_type, :summary, :learn_more, :references, :benefit_details, :location_codes, :other_nature_based_solution, :other_primary_benefits_of_intervention, :other_co_benefits_of_intervention, :picture,:remove_picture, organization_ids:[], donor_ids:[], primary_benefits_of_intervention_ids:[], co_benefits_of_intervention_ids:[], nature_based_solution_ids:[], hazard_type_ids:[]
+  permit_params :name, :organization_list, :donor_list, :tag_list, :project_uid, :status, :scale, :estimated_cost, :estimated_monetary_benefits, :original_currency, :start_year, :completion_year, :implementation_status, :intervention_type, :summary, :learn_more, :references, :benefit_details, :location_codes, :other_nature_based_solution, :other_primary_benefits_of_intervention, :other_co_benefits_of_intervention, :picture,:remove_picture, :location_coordinates, organization_ids:[], donor_ids:[], primary_benefits_of_intervention_ids:[], co_benefits_of_intervention_ids:[], nature_based_solution_ids:[], hazard_type_ids:[]
   index do
     selectable_column
     column :id
@@ -110,6 +110,9 @@ ActiveAdmin.register Project do
                 }
       f.input :status, as: :select, collection: %w{under_revision published unpublished}
       #f.input :location_codes, input_html: { value: object.current_location_codes }
+      div do
+        render partial: "admin/project/locations"
+      end
       f.input :scale, as: :select, collection: Project::SCALES
       f.input :donors
       f.input :primary_benefits_of_interventions
