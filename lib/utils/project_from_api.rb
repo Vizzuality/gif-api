@@ -87,6 +87,8 @@ class ProjectFromApi
     @project.co_benefits_of_interventions = self.get_entities(data[:co_benefits_of_interventions], CoBenefitsOfIntervention)
     @project.nature_based_solutions = self.get_entities(data[:nature_based_solutions], NatureBasedSolution)
     @project.hazard_types = self.get_entities(data[:hazard_types], HazardType)
+    @project.image_base = data[:image_base]
+    @project.picture_name = data[:picture_name]
     if @relation_errors.messages.blank? && @project.valid?
       @project.save!
       @status = 200

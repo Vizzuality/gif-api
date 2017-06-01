@@ -55,6 +55,8 @@ class Project < ApplicationRecord
     url: "/system/pictures/:id/:style/:basename.:extension"
   attr_accessor :location_codes
   attr_accessor :location_coordinates
+  attr_accessor :image_base
+  attr_accessor :picture_name
   IMPLEMENTATION_STATUSES = ["ongoing", "completed", "planning stage"]
   INTERVENTION_TYPES = %w{hybrid green}
   SCALES = %w{local regional national international}
@@ -84,6 +86,7 @@ class Project < ApplicationRecord
   before_validation :set_locations!, if: Proc.new { |project| project.location_codes.present? || project.location_coordinates.present?}
   before_validation { self.picture.clear if self.remove_picture == '1' }
   before_save :convert_currencies
+  before_validation :parse_image
 
   scope :publihsed,                 ->                        { where(status: :published) }
   scope :by_name,                   -> name                   { where('projects.name ilike ?', "%%#{name}%%") }
@@ -339,6 +342,12 @@ class Project < ApplicationRecord
 
     def touch_updated_at(relation)
       self.touch if persisted?
+    end
+
+    def parse_image
+      image = Paperclip.io_adapters.for(image_base)
+      image.original_filename = self.picture_name
+      self.picture = image
     end
 
 end
