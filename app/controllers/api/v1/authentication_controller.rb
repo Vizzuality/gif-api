@@ -11,5 +11,9 @@ module Api::V1
       end
     end
 
+    def cors
+      render text: ''
+    end
+
   end
 end

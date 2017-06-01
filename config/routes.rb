@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       post          '/auth',                     to: 'authentication#authenticate'
       get           '/filters',                  to: 'filter_collections#index'
       get           '/projects/:id/related',     to: 'projects#related'
+      match '*all' => 'authentication#cors', via: :options
     end
   end
 end
