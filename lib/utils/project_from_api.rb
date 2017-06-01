@@ -50,18 +50,21 @@
 
 
 class ProjectFromApi
-  def initialize(data)
+  def initialize(data, user)
     @data = data
     @errors = []
     @project ||= Project.new
     @relation_errors = ActiveModel::Errors.new(@project)
+    @user = user
+    @result
   end
 
-  attr_reader :errors, :data, :project, :status
+  attr_reader :errors, :data, :project, :status, :result
 
   def create_or_update
     @project = self.instantiate(data[:id])
     @project.name = data[:name]
+    @project.user = @user
     @project.estimated_monetary_benefits = data[:estimated_monetary_benefits]
     @project.estimated_cost = data[:estimated_cost]
     @project.original_currency = data[:currency_estimated_cost]
@@ -92,6 +95,7 @@ class ProjectFromApi
     if @relation_errors.messages.blank? && @project.valid?
       @project.save!
       @status = 200
+      @result = @project
     else
       self.parse_errors
       @status = 400

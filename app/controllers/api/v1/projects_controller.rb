@@ -24,15 +24,13 @@ module Api::V1
       @project = Project.find_by_lug_or_id(params[:id])
     end
     def create
-      project = ProjectFromApi.new(params[:project])
+      project = ProjectFromApi.new(params[:project], current_user)
       project.create_or_update
       if project.errors.any?
         render json: project.errors, status: project.status
       else
-        render json: project
+        render json: project.result, serializer: ProjectSerializer
       end
-    end
-    def update
     end
     private
       def filter_params
