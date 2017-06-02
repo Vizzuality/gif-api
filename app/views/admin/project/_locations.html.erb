@@ -1,1 +1,98 @@
 <p>Location code goes here. Send a json object into a hidden field named "location_coordinates". Format should be the same than the one into the user form.</p>
+
+<div style='width: 800px;'>
+  <div id="locations"></div>
+  <input type="hidden" id="hiddenLocations" name="location_coordinates" value={}/>
+
+  <input type="text" id="searchInput"  class="controls" placeholder="Search Box"/>
+  <p onclick="addLocation()">Add</p>
+  <div id="map" style='width: 800px; height: 400px;'></div>
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyesbQMyKVVbBgKVi2g6VX7mop2z96jBo&sensor=false&libraries=places"></script>
+<script type="text/javascript">
+  var locations = {};
+
+  var map = new google.maps.Map(document.getElementById('map'),{
+    center:{
+    lat: 12.9715987,
+    lng: 77.59456269999998
+    },
+    zoom: 12
+  });
+
+  var marker = new google.maps.Marker({
+    position:{
+    lat: 12.9715987,
+    lng: 77.59456269999998
+    },
+    map: map,
+    draggable:true
+  });
+
+  var searchBox = new google.maps.places.SearchBox(document.getElementById('searchInput'));
+
+  google.maps.event.addListener(searchBox , 'places_changed' , function() {
+      var places = searchBox.getPlaces();
+      var bounds =  new google.maps.LatLngBounds();
+      var i, place;
+      for( i = 0; i < places.length; i++) {
+        bounds.extend(places[i].geometry.location);
+        marker.setPosition(places[i].geometry.location);
+      }
+      map.fitBounds(bounds);
+      map.setZoom(12);
+  });
+
+  google.maps.event.addListener(map , 'drag' , function() {
+    marker.setPosition(map.getCenter());
+  });
+
+  google.maps.event.addListener(marker , 'click' , function() {
+    addLocation();
+  });
+
+  function addLocation() {
+    var lParams = marker.getPosition();
+    var id = Math.random();
+    var location = '<span id="' + id +  '" class="loc-item">' + lParams.lat() + ', ' + lParams.lng() + '<span onclick="onRemove(this)">x</span></span>';
+    appendHtml(document.getElementById('locations'), location);
+    locations[id] = { lat: lParams.lat(), lng: lParams.lng() };
+
+    setLocationsValues();
+  }
+
+  function onRemove(el) {
+    var locIdRm = el.parentElement.id;
+    var parent = document.getElementById("locations");
+    var child = document.getElementById(locIdRm);
+    parent.removeChild(child);
+
+    var newLocations = {};
+
+    for (var k in locations) {
+      if (k !== locIdRm) {
+        newLocations[k] = locations[k];
+      }
+    }
+
+    locations = newLocations;
+    setLocationsValues();
+  }
+
+  function setLocationsValues() {
+    var arrLocations = [];
+
+    for (var k in locations) {
+      arrLocations.push(locations[k]);
+    }
+  }
+
+  function appendHtml(el, str) {
+    var div = document.createElement('span');
+    div.innerHTML = str;
+    while (div.children.length > 0) {
+      el.appendChild(div.children[0]);
+    }
+  }
+</script>
