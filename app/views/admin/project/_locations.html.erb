@@ -1,12 +1,13 @@
 <p>Location code goes here. Send a json object into a hidden field named "location_coordinates". Format should be the same than the one into the user form.</p>
 
-<div style='width: 800px;'>
-  <div id="locations"></div>
+<div class="map-container">
+  <div id="locations" class="locations"></div>
   <input type="hidden" id="hiddenLocations" name="location_coordinates" value={}/>
-
-  <input type="text" id="searchInput"  class="controls" placeholder="Search Box"/>
-  <p onclick="addLocation()">Add</p>
-  <div id="map" style='width: 800px; height: 400px;'></div>
+  <div class="input-container">
+    <input type="text" id="searchInput"  class="controls" placeholder="Search Box"/>
+    <p onclick="addLocation()" class="btn">Add</p>
+  </div>
+  <div id="map" class="map"></div>
 </div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyesbQMyKVVbBgKVi2g6VX7mop2z96jBo&sensor=false&libraries=places"></script>
@@ -55,7 +56,7 @@
   function addLocation() {
     var lParams = marker.getPosition();
     var id = Math.random();
-    var location = '<span id="' + id +  '" class="loc-item">' + lParams.lat() + ', ' + lParams.lng() + '<span onclick="onRemove(this)">x</span></span>';
+    var location = '<span id="' + id +  '" class="loc-item">' + lParams.lat() + ', ' + lParams.lng() + '<span class="remove" onclick="onRemove(this)">x</span></span>';
     appendHtml(document.getElementById('locations'), location);
     locations[id] = { lat: lParams.lat(), lng: lParams.lng() };
 
