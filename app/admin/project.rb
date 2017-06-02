@@ -110,7 +110,7 @@ ActiveAdmin.register Project do
                 }
       f.input :status, as: :select, collection: %w{under_revision published unpublished}
       #f.input :location_codes, input_html: { value: object.current_location_codes }
-      div do
+      li do
         render partial: "admin/project/locations"
       end
       f.input :scale, as: :select, collection: Project::SCALES

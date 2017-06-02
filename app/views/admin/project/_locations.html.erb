@@ -1,8 +1,8 @@
-<p>Location code goes here. Send a json object into a hidden field named "location_coordinates". Format should be the same than the one into the user form.</p>
+<label class="label">Locations</label>
 
 <div class="map-container">
   <div id="locations" class="locations"></div>
-  <input type="hidden" id="hiddenLocations" name="location_coordinates" value={}/>
+  <input type="hidden" id="hiddenLocations" name="location_coordinates" value=""/>
   <div class="input-container">
     <input type="text" id="searchInput"  class="controls" placeholder="Search Box"/>
     <p onclick="addLocation()" class="btn">Add</p>
@@ -23,9 +23,9 @@
   });
 
   var marker = new google.maps.Marker({
-    position:{
-    lat: 12.9715987,
-    lng: 77.59456269999998
+    position: {
+      lat: 12.9715987,
+      lng: 77.59456269999998
     },
     map: map,
     draggable:true
@@ -37,6 +37,7 @@
       var places = searchBox.getPlaces();
       var bounds =  new google.maps.LatLngBounds();
       var i, place;
+
       for( i = 0; i < places.length; i++) {
         bounds.extend(places[i].geometry.location);
         marker.setPosition(places[i].geometry.location);
@@ -57,9 +58,9 @@
     var lParams = marker.getPosition();
     var id = Math.random();
     var location = '<span id="' + id +  '" class="loc-item">' + lParams.lat() + ', ' + lParams.lng() + '<span class="remove" onclick="onRemove(this)">x</span></span>';
+
     appendHtml(document.getElementById('locations'), location);
     locations[id] = { lat: lParams.lat(), lng: lParams.lng() };
-
     setLocationsValues();
   }
 
@@ -67,30 +68,31 @@
     var locIdRm = el.parentElement.id;
     var parent = document.getElementById("locations");
     var child = document.getElementById(locIdRm);
-    parent.removeChild(child);
-
     var newLocations = {};
 
+    parent.removeChild(child);
     for (var k in locations) {
       if (k !== locIdRm) {
         newLocations[k] = locations[k];
       }
     }
-
     locations = newLocations;
     setLocationsValues();
   }
 
   function setLocationsValues() {
     var arrLocations = [];
+    var hidden = document.getElementById('hiddenLocations');
 
     for (var k in locations) {
       arrLocations.push(locations[k]);
     }
+    hidden.value = JSON.stringify(arrLocations);
   }
 
   function appendHtml(el, str) {
     var div = document.createElement('span');
+
     div.innerHTML = str;
     while (div.children.length > 0) {
       el.appendChild(div.children[0]);
