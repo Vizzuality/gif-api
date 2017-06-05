@@ -2,7 +2,7 @@
 
 <div class="map-container">
   <div id="locations" class="locations"></div>
-  <input type="hidden" id="hiddenLocations" name="location_coordinates" value=""/>
+  <input type="hidden" id="hiddenLocations" name="project[location_coordinates]" value="<%= coordinates %>"/>
   <div class="input-container">
     <input type="text" id="searchInput"  class="controls" placeholder="Search Box"/>
     <p onclick="addLocation()" class="btn">Add</p>

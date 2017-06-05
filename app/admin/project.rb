@@ -111,7 +111,7 @@ ActiveAdmin.register Project do
       f.input :status, as: :select, collection: %w{under_revision published unpublished}
       #f.input :location_codes, input_html: { value: object.current_location_codes }
       li do
-        render partial: "admin/project/locations"
+        render partial: "admin/project/locations", locals: {coordinates: f.object.locations_projects.select(:latitude, :longitude).map{|l| {lat: l.latitude, ltd: l.longitude}}.to_json}
       end
       f.input :scale, as: :select, collection: Project::SCALES
       f.input :donors
