@@ -273,8 +273,8 @@ class Project < ApplicationRecord
       end
     end
     if self.location_coordinates.present?
-      candidates = self.location_coordinates
-      if candidates.is_a?(Array) && candidates.any?
+      candidates = Project.parse_if_string(self.location_coordinates)
+      if candidates.any?
         candidates.each do |candidate|
           begin
             lat = candidate[:lat]
@@ -302,6 +302,20 @@ class Project < ApplicationRecord
     else
       nil
     end
+  end
+
+  def self.parse_if_string(coordinates)
+    parsed_coordinates = nil
+    if coordinates.is_a? Array
+      parsed_coordinates = coordinates
+    else
+      begin
+        parsed_coordinates = JSON.parse(coordinates, {symbolize_names: true})
+      rescue
+        errors.add(:project_location_codes, "wrong coordinates")
+      end
+    end
+    parsed_coordinates
   end
 
   def self.get_location_by_coordinates(lat, long)
