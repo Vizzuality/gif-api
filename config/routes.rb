@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     scope module: :v1 do
       resources     :projects,                   only: [:index, :show, :create, :update]
       post          '/auth',                     to: 'authentication#authenticate'
+      post          '/contact',                     to: 'contacts#create'
       get           '/filters',                  to: 'filter_collections#index'
       get           '/projects/:id/related',     to: 'projects#related'
       match '*all' => 'authentication#cors', via: :options
