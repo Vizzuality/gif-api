@@ -14,6 +14,14 @@
 <script type="text/javascript">
   var locations = {};
 
+  // Set current locations when in edit
+  var hiddenLocations = JSON.parse(document.getElementById('hiddenLocations').value);
+  for (var j = 0; j < hiddenLocations.length; j++) {
+    var itId = Math.random();
+    locations[itId] = hiddenLocations[j];
+    setLocationHtml(itId, hiddenLocations[j].lat, hiddenLocations[j].ltd);
+  }
+
   var map = new google.maps.Map(document.getElementById('map'),{
     center:{
     lat: 12.9715987,
@@ -54,13 +62,18 @@
     addLocation();
   });
 
+  function setLocationHtml(id, lat, lng) {
+    var location = '<span id="' + id +  '" class="loc-item">' + lat + ', ' + lng + '<span class="remove" onclick="onRemove(this)">x</span></span>';
+
+    appendHtml(document.getElementById('locations'), location);
+  }
+
   function addLocation() {
     var lParams = marker.getPosition();
     var id = Math.random();
-    var location = '<span id="' + id +  '" class="loc-item">' + lParams.lat() + ', ' + lParams.lng() + '<span class="remove" onclick="onRemove(this)">x</span></span>';
 
-    appendHtml(document.getElementById('locations'), location);
-    locations[id] = { lat: lParams.lat(), lng: lParams.lng() };
+    setLocationHtml(id, lParams.lat(), lParams.lng());
+    locations[id] = { lat: lParams.lat(), ltd: lParams.lng() };
     setLocationsValues();
   }
 
