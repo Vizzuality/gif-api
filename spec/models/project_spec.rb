@@ -235,6 +235,7 @@ RSpec.describe Project, type: :model do
     end
     it 'finds related projects' do
       expect(@project.related).to include(@project2)
+      expect(@project.related).not_to include(@project)
     end
     it 'can be tagged on organizations' do
       @project.organization_list.add('org tag')

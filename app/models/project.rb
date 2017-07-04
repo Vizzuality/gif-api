@@ -202,7 +202,7 @@ class Project < ApplicationRecord
   def related
     hazard_types = self.hazard_types.pluck(:id)
     countries = self.locations.pluck(:iso)
-    related = Project.joins([:hazard_types, :locations]).by_hazard_types(hazard_types).by_countries(countries).where.not(id: self.id).limit(3)
+    related = Project.joins([:hazard_types, :locations]).by_hazard_types(hazard_types).by_countries(countries).where.not(id: self.id).distinct.limit(3)
     related
   end
 
