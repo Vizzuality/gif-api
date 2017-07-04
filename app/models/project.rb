@@ -184,16 +184,16 @@ class Project < ApplicationRecord
         attributes['Intervention Type'] = project.intervention_type
         attributes['Implementation Status'] = project.implementation_status
 
-        attributes['Organization'] = project.organizations.pluck(:name).join("|")
-        attributes['Main donor'] = project.donors.pluck(:name).join("|")
-        attributes['Primary Benefits of Intervention'] = project.primary_benefits_of_interventions.pluck(:name).join("|")
-        attributes['Co-Benefits of Intervention'] = project.co_benefits_of_interventions.pluck(:name).join("|")
-        attributes['Nature-Based Solutions'] = project.nature_based_solutions.pluck(:name).join("|")
-        attributes['Hazard Type'] = project.hazard_types.pluck(:name).join("|")
-        attributes["Locations"] = project.locations.pluck(:id).join("|")
-        attributes["Country"] = project.locations.pluck(:adm0_name).join("|")
-        attributes["Province"] = project.locations.pluck(:adm1_name).join("|")
-        attributes["District"] = project.locations.pluck(:adm2_name).join("|")
+        attributes['Organization'] = project.organizations.pluck(:name).reject(&:blank?).join("|")
+        attributes['Main donor'] = project.donors.pluck(:name).reject(&:blank?).join("|")
+        attributes['Primary Benefits of Intervention'] = project.primary_benefits_of_interventions.pluck(:name).reject(&:blank?).join("|")
+        attributes['Co-Benefits of Intervention'] = project.co_benefits_of_interventions.pluck(:name).reject(&:blank?).join("|")
+        attributes['Nature-Based Solutions'] = project.nature_based_solutions.pluck(:name).reject(&:blank?).join("|")
+        attributes['Hazard Type'] = project.hazard_types.pluck(:name).reject(&:blank?).join("|")
+        attributes["Locations"] = project.locations.pluck(:id).reject(&:blank?).join("|")
+        attributes["Country"] = project.locations.pluck(:adm0_name).reject(&:blank?).join("|")
+        attributes["Province"] = project.locations.pluck(:adm1_name).reject(&:blank?).join("|")
+        attributes["District"] = project.locations.pluck(:adm2_name).reject(&:blank?).join("|")
         csv << attributes.values_at(*columns)
       end
     end
