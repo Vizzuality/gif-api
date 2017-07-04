@@ -251,34 +251,34 @@ class Project < ApplicationRecord
 
   def set_locations!
     new_locations_projects = []
-    if self.location_codes.present?
-      candidates = self.location_codes
-      ary = candidates.to_s.split('|').reject { |i| i.empty? }
-      ary.each do |code|
-        adm_levels = code.split('.')
-        level = adm_levels.size - 1
-        location = Location.where("adm#{level}_code": adm_levels[level])
-        location = location.first if location.any?
-        if location.present?
-          if location.centroid.present?
-            coordinates = JSON.parse(location.centroid)["coordinates"]
-          else
-            coordinates = [nil, nil]
-          end
-          new_locations_project = LocationsProject.new(location: location, latitude: coordinates[1], longitude: coordinates[0])
-          new_locations_projects << new_locations_project
-        else
-          errors.add(:project_location_codes, "there is no location with code #{code} and admin level #{level}")
-        end
-      end
-    end
+    # if self.location_codes.present?
+    #   candidates = self.location_codes
+    #   ary = candidates.to_s.split('|').reject { |i| i.empty? }
+    #   ary.each do |code|
+    #     adm_levels = code.split('.')
+    #     level = adm_levels.size - 1
+    #     location = Location.where("adm#{level}_code": adm_levels[level])
+    #     location = location.first if location.any?
+    #     if location.present?
+    #       if location.centroid.present?
+    #         coordinates = JSON.parse(location.centroid)["coordinates"]
+    #       else
+    #         coordinates = [nil, nil]
+    #       end
+    #       new_locations_project = LocationsProject.new(location: location, latitude: coordinates[1], longitude: coordinates[0])
+    #       new_locations_projects << new_locations_project
+    #     else
+    #       errors.add(:project_location_codes, "there is no location with code #{code} and admin level #{level}")
+    #     end
+    #   end
+    # end
     if self.location_coordinates.present?
       candidates = Project.parse_if_string(self.location_coordinates)
       if candidates.any?
         candidates.each do |candidate|
           begin
             lat = candidate[:lat]
-            long = candidate[:lng]
+            long = candidate[:ltd]
           rescue
             nil
           end
