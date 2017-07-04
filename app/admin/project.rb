@@ -84,7 +84,10 @@ ActiveAdmin.register Project do
     column :name
     column :status
     column :organizations do |obj|
-      obj.organizations.map{|a| a.name}.join(" | ")
+      obj.organizations.map{|a| a.name}.uniq.join(" | ")
+    end
+    column :countries do |obj|
+      obj.locations.map{|a| a.adm0_name}.uniq.join(" | ")
     end
     actions
   end
