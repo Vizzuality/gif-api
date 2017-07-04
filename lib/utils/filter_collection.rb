@@ -12,7 +12,7 @@ module FilterCollection
               WHEN name = 'urban flooding' THEN '3'
               WHEN name = 'drought' THEN '4'
               WHEN name = 'landslides' THEN '5'
-             END
+            END
         ")
     intervention_types = Project::INTERVENTION_TYPES.sort_by{ |m| m.downcase }
     nature_based_solutions = NatureBasedSolution.all.select(:id, :name).order('name ASC')
