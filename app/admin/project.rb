@@ -142,4 +142,35 @@ ActiveAdmin.register Project do
     f.actions
   end
 
+  csv do
+    column :id
+    column :project_uid
+    column :status
+    column :name
+    column :scale
+    column :estimated_cost
+    column :estimated_monetary_benefits
+    column :original_currency
+    column :summary
+    column :start_year
+    column :completion_year
+    column :implementation_status
+    column :intervention_type
+    column :learn_more
+    column :references
+    column :benefit_details
+    column :slug
+    column :contributor_name
+    column :contributor_organization
+    column :contact_info
+    column :other_nature_based_solution
+    column :other_primary_benefits_of_intervention
+    column :other_co_benefits_of_intervention
+    column :user_id
+    column :benefits_currency
+    column :costs_usd
+    column :benefits_usd
+    column(:coordinates) { |p| p.locations_projects.map{ |l| "#{l.latitude}, #{l.longitude}" }.join("|") }
+  end
+
 end
