@@ -1,7 +1,7 @@
 module Api::V1
   class ProjectsController < ApiController
     before_action :get_project, only: [:show, :related]
-    skip_before_action :authenticate_request, only: [:index, :show, :related, :get_project]
+    skip_before_action :authenticate_request, only: [:index, :show, :related, :get_project, :create]
     def index
       projects = Project.fetch_all(filter_params)
       respond_to do |format|

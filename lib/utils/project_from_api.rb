@@ -50,7 +50,7 @@
 
 
 class ProjectFromApi
-  def initialize(data, user)
+  def initialize(data, user=nil)
     @data = data
     @errors = []
     @project ||= Project.new
@@ -64,7 +64,7 @@ class ProjectFromApi
   def create_or_update
     @project = self.instantiate(data[:id])
     @project.name = data[:name]
-    @project.user = @user
+    @project.user = @user if @user
     @project.estimated_monetary_benefits = data[:estimated_monetary_benefits]
     @project.estimated_cost = data[:estimated_cost]
     @project.original_currency = data[:currency_estimated_cost]
