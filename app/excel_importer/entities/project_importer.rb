@@ -69,7 +69,7 @@ class ProjectImporter
     nature_based_solutions = self.find_some_by_name(data['Nature-Based Solutions'], NatureBasedSolution)
     hazard_types = self.find_some_by_name(data['Hazard Type'], HazardType)
 
-    locations = self.get_locations(data["Locations"])
+    locations_projects = self.set_locations!(data["Locations"])
 
     if project.valid? && @errors == []
       project.status = 1
@@ -80,7 +80,7 @@ class ProjectImporter
       project.co_benefits_of_interventions = co_benefits_of_interventions if co_benefits_of_interventions.present?
       project.nature_based_solutions = nature_based_solutions if nature_based_solutions.present?
       project.hazard_types = hazard_types if hazard_types.present?
-      project.locations = locations if locations.present?
+      project.locations_projects = locations_projects if locations_projects.present?
       return true
     else
       @errors << { project: project.errors.full_messages } if project.errors.any?
@@ -131,23 +131,62 @@ class ProjectImporter
     end
   end
 
-  def get_locations(candidates)
-    if candidates.present?
-      ary = candidates.to_s.split('|').reject { |i| i.empty? }
-      locations = []
-      ary.each do |code|
-        adm_levels = code.split('.')
-        level = adm_levels.size - 1
-        location = Location.where("adm#{level}_code": adm_levels[level])
-        location = location.first
-        if location.present?
-          locations << location
-        else
-          @errors << {location: "there is no location with code #{code} and admin level #{level}"}
+  def set_locations!(raw_string)
+    new_locations_projects = []
+    if raw_string.present?
+      candidates = self.parse_coordinates_from_excel(raw_string)
+      if candidates.any?
+        candidates.each do |candidate|
+          begin
+            lat = candidate[:lat]
+            long = candidate[:ltd]
+          rescue
+            nil
+          end
+          location = self.get_location_by_coordinates(lat, long) if lat.present? && long.present?
+          if location.present?
+            if location.centroid.present?
+              coordinates = JSON.parse(location.centroid)["coordinates"]
+            else
+              coordinates = [nil, nil]
+            end
+            new_locations_project = LocationsProject.new(location: location, latitude: lat, longitude: long)
+            new_locations_projects << new_locations_project
+          else
+            @errors << {location: "there is no location with latitude #{lat} and longitude #{long}"}
+          end
         end
       end
-      locations
+    end
+    if new_locations_projects.any? && @errors.blank?
+      new_locations_projects
     else
+      nil
+    end
+  end
+
+  def parse_coordinates_from_excel(coordinates)
+    parsed_coordinates = nil
+      begin
+        parsed_coordinates = coordinates.split("|").map{ |p| {"lat": p.split(",")[0], "ltd": p.split(",")[1] } }
+      rescue
+        @errors << {location: "wrong format"}
+      end
+    parsed_coordinates
+  end
+
+  def get_location_by_coordinates(lat, long)
+    require 'cartowrap'
+    api = Cartowrap::API.new(nil, "simbiotica")
+    query = "SELECT * from gaul_final where st_intersects(the_geom, ST_SetSRID(ST_MakePoint(#{long}, #{lat}),4326)) order by level desc limit 1"
+    api.send_query(query)
+    begin
+      response = JSON.parse(api.response)["rows"][0]
+      level = response["level"]
+      code = response["adm#{level}_code"]
+      location = Location.where("level=#{level} AND adm#{level}_code='#{code}'").first
+      location
+    rescue
       nil
     end
   end

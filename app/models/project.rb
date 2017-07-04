@@ -53,7 +53,6 @@ class Project < ApplicationRecord
   has_attached_file :picture, styles: { thumb: "100x100>" }, default_url: "/uploads/images/:style/missing.png",
     path: "#{Rails.root}/public/system/pictures/:id/:style/:basename.:extension",
     url: "/system/pictures/:id/:style/:basename.:extension"
-  attr_accessor :location_codes
   attr_accessor :location_coordinates
   attr_accessor :image_base
   attr_accessor :picture_name
@@ -83,7 +82,7 @@ class Project < ApplicationRecord
   validate :costs_currency_validaton
   validate :benefits_currency_validaton
 
-  before_validation :set_locations!, if: Proc.new { |project| project.location_codes.present? || project.location_coordinates.present?}
+  before_validation :set_locations!, if: Proc.new { |project| project.location_coordinates.present? }
   before_validation { self.picture.clear if self.remove_picture == '1' }
   before_save :convert_currencies
   before_validation :parse_image
@@ -234,44 +233,8 @@ class Project < ApplicationRecord
     end
   end
 
-  def current_location_codes
-    location_codes = []
-    self.locations.each do |l|
-      if l.adm0_code.present?
-       location_code = l.adm0_code
-      else
-        return ''
-      end
-      location_code += ".#{l.adm1_code}" if l.adm1_code.present?
-      location_code += ".#{l.adm2_code}" if l.adm2_code.present?
-      location_codes << location_code
-    end
-    location_codes.join('|')
-  end
-
   def set_locations!
     new_locations_projects = []
-    # if self.location_codes.present?
-    #   candidates = self.location_codes
-    #   ary = candidates.to_s.split('|').reject { |i| i.empty? }
-    #   ary.each do |code|
-    #     adm_levels = code.split('.')
-    #     level = adm_levels.size - 1
-    #     location = Location.where("adm#{level}_code": adm_levels[level])
-    #     location = location.first if location.any?
-    #     if location.present?
-    #       if location.centroid.present?
-    #         coordinates = JSON.parse(location.centroid)["coordinates"]
-    #       else
-    #         coordinates = [nil, nil]
-    #       end
-    #       new_locations_project = LocationsProject.new(location: location, latitude: coordinates[1], longitude: coordinates[0])
-    #       new_locations_projects << new_locations_project
-    #     else
-    #       errors.add(:project_location_codes, "there is no location with code #{code} and admin level #{level}")
-    #     end
-    #   end
-    # end
     if self.location_coordinates.present?
       candidates = Project.parse_if_string(self.location_coordinates)
       if candidates.any?
