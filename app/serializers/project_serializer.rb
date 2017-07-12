@@ -47,6 +47,9 @@ class ProjectSerializer < ActiveModel::Serializer
   has_many :locations, serializer: LocationSerializer
   has_many :nature_based_solutions, serializer: NatureBasedSolutionSerializer
   has_many :organizations, serializer: OrganizationSerializer
+  def references
+    object.references.split(/[\s|\|]/).delete_if{ |r| !r.include?("http") } if object.references.present?
+  end
   def image
     object.picture.url(:default) if object.picture.present?
   end
