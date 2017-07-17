@@ -129,7 +129,7 @@ ActiveAdmin.register Project do
       f.input :completion_year
       f.input :implementation_status, collection: Project::IMPLEMENTATION_STATUSES
       f.input :intervention_type, as: :select, collection: Project::INTERVENTION_TYPES
-      f.input :summary
+      f.input :summary, as: :ckeditor
       f.input :learn_more
       f.input :references
       f.input :benefit_details

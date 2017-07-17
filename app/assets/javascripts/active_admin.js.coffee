@@ -3,3 +3,4 @@
 #= require admin/fileuploader
 #= require admin/excel_upload
 #= require admin/map
+#= require ckeditor/init

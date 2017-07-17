@@ -133,6 +133,9 @@ GEM
       multi_json
     case_transform (0.2)
       activesupport
+    ckeditor (4.2.4)
+      cocaine
+      orm_adapter (~> 0.5.0)
     climate_control (0.2.0)
     cocaine (0.5.8)
       climate_control (>= 0.0.3, < 1.0)
@@ -366,6 +369,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rvm
   cartowrap
+  ckeditor
   coffee-rails (~> 4.2)
   database_cleaner (= 1.5.3)
   devise (= 4.2.0)
