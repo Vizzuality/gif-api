@@ -25,7 +25,7 @@ module Gif
       g.test_framework :rspec, fixture: true
       g.fixture_replacement :factory_girl, dir: "spec/factories"
     end
-    config.assets.precompile += %w( ckeditor/ )*
+    config.assets.enabled = true
     config.eager_load_paths += %W(#{Rails.root}/app/excel_importer #{Rails.root}/app/excel_importer/entities #{Rails.root}/lib/utils #{Rails.root}/app/commands)
   end
 end
