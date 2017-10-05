@@ -214,7 +214,7 @@ class Project < ApplicationRecord
   def convert_currencies
     year = self.start_year.present? ? self.start_year : Time.now.year
     c_currency = self.original_currency.present? ? self.original_currency : "USD"
-    b_currency = self.benefits_currency.present? ? self.benefits_currency : "USD"
+    b_currency = self.original_currency.present? ? self.original_currency : "USD"
     if self.estimated_cost.present? && (self.estimated_cost_changed? || self.original_currency_changed? || self.new_record?)
       if c_currency == "USD"
         amount_c = self.estimated_cost
