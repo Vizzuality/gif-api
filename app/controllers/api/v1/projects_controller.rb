@@ -34,7 +34,7 @@ module Api::V1
     end
     private
       def filter_params
-        params.permit(:q, :summary, :order, :direction, :name, :from_cost, :to_cost, :offset, :limit, co_benefits:[], primary_benefits:[], status:[], scales:[], organizations:[], donors:[], countries:[], regions:[], hazard_types:[], intervention_types:[], nature_based_solutions:[])
+        params.permit(:q, :summary, :order, :direction, :name, :from_cost, :to_cost, :offset, :limit, :other_organization, :other_donor, co_benefits:[], primary_benefits:[], status:[], scales:[], organizations:[], donors:[], countries:[], regions:[], hazard_types:[], intervention_types:[], nature_based_solutions:[])
       end
   end
 end

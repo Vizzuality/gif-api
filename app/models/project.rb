@@ -35,6 +35,8 @@
 #  picture_content_type                   :string
 #  picture_file_size                      :integer
 #  picture_updated_at                     :datetime
+#  other_organization                     :string
+#  other_donor                            :string
 #
 
 class Project < ApplicationRecord
