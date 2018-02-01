@@ -66,7 +66,7 @@ ActiveAdmin.register Project do
   filter :scale, as: :select, collection: Project::SCALES
   filter :implementation_status, as: :select, collection: Project::IMPLEMENTATION_STATUSES
   filter :intervention_type, as: :select, collection: Project::INTERVENTION_TYPES
-  filter :estimated_cost
+  filter :costs_usd
   filter :estimated_monetary_benefits
   filter :original_currency, as: :select
   filter :start_year
