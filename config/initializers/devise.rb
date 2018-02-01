@@ -147,8 +147,7 @@ Devise.setup do |config|
 
   # If true, extends the user's remember period when remembered via cookie.
   # config.extend_remember_period = false
-  secure_option = (Rails.env.development? || Rails.env.test?) ? false : true
-  config.rememberable_options = { :secure => secure_option }
+  secure: true
 
   # Options to be passed to the created cookie. For instance, you can set
   # secure: true in order to force SSL only cookies.
