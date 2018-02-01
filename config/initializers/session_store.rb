@@ -2,4 +2,4 @@
 
 Rails.application.config.session_store :cookie_store, key: '_gif_session'
 secure_option = (Rails.env.development? || Rails.env.test?) ? false : true
-Gif::Application.config.session_store :cookie_store, { key: ‘_xxxx_session’, secure: secure_option }
+Gif::Application.config.session_store :cookie_store, { key: ‘_gif_session’, secure: secure_option }
