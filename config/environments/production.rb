@@ -69,7 +69,7 @@ Rails.application.configure do
   config.active_support.deprecation = :notify
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.to_prepare { SessionsController.ssl_required :new, :create }
+  config.to_prepare { Devise::SessionsController.ssl_required :new, :create }
   config.log_formatter = ::Logger::Formatter.new
   config.to_prepare { Devise::SessionsController.force_ssl }
   config.to_prepare { Devise::RegistrationsController.force_ssl }
