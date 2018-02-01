@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include SslRequirement
   protect_from_forgery with: :null_session, only: Proc.new { |c| c.json_request? }
 
   before_action :set_cors
