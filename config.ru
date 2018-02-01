@@ -5,4 +5,5 @@ require "rack/secure_cookies"
 
 use Rack::SecureCookies
 use CookieMiddleware
+
 run Rails.application
