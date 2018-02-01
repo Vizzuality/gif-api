@@ -1,4 +1,3 @@
-require "rack/secure_cookies"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -49,7 +48,6 @@ Rails.application.configure do
 
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]
-  config.middleware.insert_before ActionDispatch::Cookies, Rack::SecureCookies
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -72,7 +70,7 @@ Rails.application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
-
+  Rails.application.config.session_store :cookie_store, key: '_gif_session', secure: true
   # Use a different logger for distributed setups.
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
