@@ -35,7 +35,6 @@ gem 'acts-as-taggable-on', '~> 4.0'
 gem 'cartowrap'
 gem "paperclip", "~> 5.0.0"
 gem 'sendgrid-ruby'
-gem 'rack-cors'
 
 group :development, :test do
   gem 'byebug', platform: :mri

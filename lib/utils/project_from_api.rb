@@ -95,6 +95,7 @@ class ProjectFromApi
     @project.picture_name = data[:picture_name]
     @project.other_organization = data[:new_organization]
     @project.other_donor = data[:new_donor]
+    byebug
     if @relation_errors.messages.blank? && @project.valid?
       @project.save!
       @status = 200
