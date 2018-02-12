@@ -19,4 +19,6 @@
 
 class Location < ApplicationRecord
   has_and_belongs_to_many :projects, dependent: :nullify
+
+  after_save { projects.find_each(&:touch) }
 end
