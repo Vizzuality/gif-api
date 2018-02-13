@@ -7,9 +7,14 @@ module Api::V1
         format.json do
           # rubocop:disable LineLength
           key_string = "projects#{request.url}_#{request.query_string}_#{Project.order('updated_at DESC').first.try(:updated_at)}_json".parameterize
-          projects = Rails.cache.fetch(key_string) { render json: Project.fetch_all(filter_params), each_serializer: ProjectSerializer }
           # rubocop:enable LineLength
-          render json: projects rescue projects
+          if Rails.cache.exist?(key_string)
+            render json: Rails.cache.read(key_string)
+          else
+            # rubocop:disable LineLength
+            Rails.cache.fetch(key_string) { render json: Project.fetch_all(filter_params), each_serializer: ProjectSerializer }
+            # rubocop:enable LineLength
+          end
         end
         format.csv do
           # rubocop:disable LineLength
