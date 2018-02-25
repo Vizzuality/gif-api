@@ -68,5 +68,6 @@ set :ssh_options, {
   auth_methods: %w(publickey password),
   password: fetch(:password)
 }
- set :branch, 'master'
- set :deploy_to, '~/gif_api'
+set :rails_env, 'staging'
+set :branch, 'master'
+set :deploy_to, '~/gif_api'
