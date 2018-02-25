@@ -16,7 +16,7 @@ test: &test
 
 staging:
   <<: *default
-  url: <%= ENV['GIF_STAGING_DATABASE_URL'] %>
+  database: <%= ENV['GIF_DATABASE_URL'] %>
 
 production:
   <<: *default
