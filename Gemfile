@@ -36,6 +36,7 @@ gem 'cartowrap'
 gem "paperclip", "~> 5.0.0"
 gem 'sendgrid-ruby'
 gem 'dalli'
+gem 'rack-cors', :require => 'rack/cors'
 
 group :development, :test do
   gem 'byebug', platform: :mri
