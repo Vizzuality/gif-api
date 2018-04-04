@@ -28,7 +28,7 @@ module Gif
     config.assets.precompile += %w( ckeditor/* )
     config.eager_load_paths += %W(#{Rails.root}/app/excel_importer #{Rails.root}/app/excel_importer/entities #{Rails.root}/lib/utils #{Rails.root}/app/commands)
 
-    config.middleware.insert_before 0, "Rack::Cors" do
+    config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
         resource '*', :headers => :any, :methods => [:get, :post, :options]
