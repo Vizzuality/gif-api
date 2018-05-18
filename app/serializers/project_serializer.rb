@@ -41,7 +41,7 @@
 
 class ProjectSerializer < ActiveModel::Serializer
   cache key: 'project'
-  attributes :id, :slug, :name, :scale, :estimated_cost, :estimated_monetary_benefits, :benefit_details, :original_currency, :benefits_currency, :costs_usd, :benefits_usd, :summary, :start_year, :completion_year, :implementation_status, :intervention_type, :learn_more, :references, :other_nature_based_solution, :other_primary_benefits_of_intervention, :other_co_benefits_of_intervention, :image, :other_organization, :other_donor
+  attributes :id, :slug, :name, :scale, :estimated_cost, :estimated_monetary_benefits, :benefit_details, :original_currency, :benefits_currency, :costs_usd, :benefits_usd, :summary, :start_year, :completion_year, :implementation_status, :intervention_type, :learn_more, :references, :other_nature_based_solution, :other_primary_benefits_of_intervention, :other_co_benefits_of_intervention, :image, :other_organization, :other_donor, :contributor_name, :contributor_organization
   has_many :donors, serializer: DonorSerializer
   has_many :co_benefits_of_interventions, serializer: CoBenefitsOfInterventionSerializer
   has_many :primary_benefits_of_interventions, serializer: PrimaryBenefitsOfInterventionSerializer
