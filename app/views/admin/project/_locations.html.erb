@@ -1,16 +1,22 @@
 <label class="label">Locations</label>
+<div id="locations" class="locations"></div>
+<p class="inline-hints">Use the map below to search a place or drag the marker to get a specific location.</p>
 
 <div class="map-container">
-  <div id="locations" class="locations"></div>
   <input type="hidden" id="hiddenLocations" name="project[location_coordinates]" value="<%= coordinates %>"/>
   <div class="input-container">
-    <input type="text" id="searchInput"  class="controls" placeholder="Search Box"/>
+    <p id="preview">
+      Lat: <span id="lat">0.000000</span> /
+      Lng: <span id="lng">0.000000</span>
+    </p>
     <p onclick="addLocation()" class="btn">Add</p>
+  </div>
+  <div class="search-control">
+    <input type="text" id="searchInput"  class="controls" placeholder="Search by address"/>
   </div>
   <div id="map" class="map"></div>
 </div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyesbQMyKVVbBgKVi2g6VX7mop2z96jBo&sensor=false&libraries=places"></script>
 <script type="text/javascript">
   var locations = {};
 
@@ -22,27 +28,43 @@
     setLocationHtml(itId, hiddenLocations[j].lat, hiddenLocations[j].ltd);
   }
 
-  var map = new google.maps.Map(document.getElementById('map'),{
-    center:{
-    lat: 12.9715987,
-    lng: 77.59456269999998
-    },
-    zoom: 12
-  });
+  // Initializing search box
+  var input = document.getElementById('searchInput');
+  var lat = document.getElementById('lat');
+  var lng = document.getElementById('lng');
+  var searchBox, map, marker, service;
 
-  var marker = new google.maps.Marker({
-    position: {
+  function initAutocomplete() {
+    map = new google.maps.Map(document.getElementById('map'),{
+      center:{
       lat: 12.9715987,
       lng: 77.59456269999998
-    },
-    map: map,
-    draggable:true
-  });
+      },
+      zoom: 12
+    });
 
-  var searchBox = new google.maps.places.SearchBox(document.getElementById('searchInput'));
+    marker = new google.maps.Marker({
+      position: {
+        lat: 12.9715987,
+        lng: 77.59456269999998
+      },
+      map: map,
+      draggable:true
+    });
 
-  google.maps.event.addListener(searchBox , 'places_changed' , function() {
+    lat.innerText = 12.9715987;
+    lng.innerText = 77.59456269999998;
+    searchBox = new google.maps.places.SearchBox(input);
+
+    // Bias the SearchBox results towards current map's viewport.
+    map.addListener('bounds_changed', function() {
+      searchBox.setBounds(map.getBounds());
+    });
+
+    searchBox.addListener('places_changed' , function() {
       var places = searchBox.getPlaces();
+      if (places.length == 0) return;
+
       var bounds =  new google.maps.LatLngBounds();
       var i, place;
 
@@ -52,19 +74,33 @@
       }
       map.fitBounds(bounds);
       map.setZoom(12);
-  });
 
-  google.maps.event.addListener(map , 'drag' , function() {
-    marker.setPosition(map.getCenter());
-  });
+      var center = map.getCenter();
+      lat.innerText = center.lat();
+      lng.innerText = center.lng();
+    });
 
-  google.maps.event.addListener(marker , 'click' , function() {
-    addLocation();
-  });
+    google.maps.event.addListener(map , 'drag' , function() {
+      var center = map.getCenter();
+      lat.innerText = center.lat();
+      lng.innerText = center.lng();
+      marker.setPosition(center);
+    });
 
+    google.maps.event.addListener(marker , 'click' , function() {
+      addLocation();
+    });
+
+    google.maps.event.addListener(marker , 'drag' , function() {
+      var position = marker.getPosition();
+      lat.innerText = position.lat();
+      lng.innerText = position.lng();
+    });
+  }
+
+  // Set location
   function setLocationHtml(id, lat, lng) {
     var location = '<span id="' + id +  '" class="loc-item">' + lat + ', ' + lng + '<span class="remove" onclick="onRemove(this)">x</span></span>';
-
     appendHtml(document.getElementById('locations'), location);
   }
 
@@ -112,3 +148,4 @@
     }
   }
 </script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyesbQMyKVVbBgKVi2g6VX7mop2z96jBo&libraries=places&callback=initAutocomplete"></script>

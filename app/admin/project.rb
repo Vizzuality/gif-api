@@ -112,7 +112,7 @@ ActiveAdmin.register Project do
                   data: { select_options: { tokenSeparators: [','] } }
                 }
       f.input :status, as: :select, collection: %w{under_revision published unpublished}
-      li do
+      li(class: 'input') do
         render partial: "admin/project/locations", locals: {coordinates: f.object.locations_projects.select(:latitude, :longitude).map{|l| {lat: l.latitude, ltd: l.longitude}}.to_json}
       end
       f.input :scale, as: :select, collection: Project::SCALES
