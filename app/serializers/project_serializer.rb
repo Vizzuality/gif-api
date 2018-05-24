@@ -47,6 +47,7 @@ class ProjectSerializer < ActiveModel::Serializer
   has_many :primary_benefits_of_interventions, serializer: PrimaryBenefitsOfInterventionSerializer
   has_many :hazard_types, serializer:  HazardTypeSerializer
   has_many :locations, serializer: LocationSerializer
+  has_many :locations_projects
   has_many :nature_based_solutions, serializer: NatureBasedSolutionSerializer
   has_many :organizations, serializer: OrganizationSerializer
   def references
