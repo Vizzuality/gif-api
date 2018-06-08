@@ -27,3 +27,9 @@
 !/private/.keep
 # Ignore environment variables
 /.env
+
+# Ignore the certificates folder
+.ssl/
+
+# Ignore diagram files
+erd.pdf

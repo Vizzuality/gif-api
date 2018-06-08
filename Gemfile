@@ -60,6 +60,12 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rvm'
   gem 'capistrano-passenger'
+
+  # Diagrams
+  gem 'rails-erd'
+
+  # SSL
+  gem 'thin'
 end
 
 group :test do

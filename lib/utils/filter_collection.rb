@@ -20,8 +20,8 @@ module FilterCollection
     primary_benefits = PrimaryBenefitsOfIntervention.all.select(:id, :name).order('name ASC')
     co_benefits = CoBenefitsOfIntervention.all.select(:id, :name).order('name ASC')
     implementation_statuses = Project::IMPLEMENTATION_STATUSES.sort_by{ |m| m.downcase }
-    cost_min = 0.15
-    cost_max = 5000.0
+    cost_min = ENV.fetch('COST_MIN', 0.15).to_f
+    cost_max = ENV.fetch('COST_MAX', 2000.0).to_f
     filters = {}
     filters[:scales] = scales
     filters[:regions] = regions
