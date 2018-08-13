@@ -152,6 +152,7 @@ class Project < ApplicationRecord
     if options[:order]
       order = 'projects.name'                       if options[:order] == 'name'
       order = 'organizations.name'                  if options[:order] == 'organization'
+      order = 'donors.name'                  if options[:order] == 'donor'
       order = 'locations.adm0_name'                 if options[:order] == 'country'
       order = 'hazard_types.name'                   if options[:order] == 'hazard_type'
       order = 'nature_based_solutions.name'         if options[:order] == 'nature_based_solution'
