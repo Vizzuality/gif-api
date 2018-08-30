@@ -19,5 +19,5 @@ staging:
   database: <%= ENV['GIF_DATABASE_URL'] %>
 
 production:
-  <<: *default
-  database: <%= ENV['GIF_DATABASE_URL'] %>
+  url: <%= ENV['GIF_DATABASE_URL'] %>
+  pool: 15
