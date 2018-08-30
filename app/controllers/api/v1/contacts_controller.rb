@@ -12,7 +12,7 @@ module Api::V1
 
     private
     def contact_params
-      params.permit(:email, :name, :message, :subject)
+      params.permit(:email, :name, :message, :subject, :contact)
     end
   end
 end
