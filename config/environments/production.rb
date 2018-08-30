@@ -3,6 +3,7 @@ Rails.application.configure do
 
   # Code is not reloaded between requests.
   config.cache_classes = true
+  config.perform_caching = true
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
@@ -50,7 +51,7 @@ Rails.application.configure do
   config.log_tags = [ :request_id ]
 
   # Use a different cache store in production.
-  config.cache_store = :mem_cache_store
+  config.cache_store = :dalli_store, 'localhost:11211'
   config.action_controller.perform_caching = true
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
@@ -71,7 +72,7 @@ Rails.application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
-  Rails.application.config.session_store :cookie_store, key: '_gif_session', secure: true
+  config.session_store :cookie_store, key: '_gif_session', secure: true
   # Use a different logger for distributed setups.
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
